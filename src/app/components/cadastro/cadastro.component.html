@@ -1,0 +1,69 @@
+<div class="signup-page-wrapper">
+    <div class="cadastro-container">
+        <h1>Crie sua Conta</h1>
+        
+        <form class="cadastro-form" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            
+            <div class="input-group">
+                <label for="nome">Nome Completo</label>
+                <input 
+                    type="text" 
+                    id="nome" 
+                    formControlName="nome" 
+                    placeholder="Seu nome"
+                    [class.error-border]="signupForm.get('nome')?.invalid && signupForm.get('nome')?.touched"
+                >
+                @if (signupForm.get('nome')?.hasError('required') && signupForm.get('nome')?.touched) {
+                    <small class="error-msg">O nome é obrigatório.</small>
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    formControlName="email" 
+                    placeholder="seu.email@exemplo.com"
+                    [class.error-border]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+                >
+                @if (signupForm.get('email')?.hasError('email') && signupForm.get('email')?.touched) {
+                    <small class="error-msg">Digite um e-mail válido.</small>
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input 
+                    type="password" 
+                    id="senha" 
+                    formControlName="senha" 
+                    placeholder="Mínimo 8 caracteres"
+                    [class.error-border]="signupForm.get('senha')?.invalid && signupForm.get('senha')?.touched"
+                >
+                @if (signupForm.get('senha')?.hasError('minlength') && signupForm.get('senha')?.touched) {
+                    <small class="error-msg">A senha deve ter no mínimo 8 caracteres.</small>
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="confirmar-senha">Confirmar Senha</label>
+                <input 
+                    type="password" 
+                    id="confirmar-senha" 
+                    formControlName="confirmarSenha"
+                    [class.error-border]="signupForm.get('confirmarSenha')?.hasError('passwordMismatch') && signupForm.get('confirmarSenha')?.touched"
+                >
+                @if (signupForm.get('confirmarSenha')?.hasError('passwordMismatch') && signupForm.get('confirmarSenha')?.touched) {
+                    <small class="error-msg">As senhas não conferem.</small>
+                }
+            </div>
+
+            <button type="submit" class="btn-cadastro" [disabled]="signupForm.invalid">Cadastrar</button>
+            
+            <div class="login-link">
+                <p>Já tem uma conta? <a routerLink="/login">Faça Login</a></p>
+            </div>
+        </form>
+    </div>
+</div>

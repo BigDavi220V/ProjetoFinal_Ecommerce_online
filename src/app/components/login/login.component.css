@@ -1,0 +1,244 @@
+/* Variáveis de cor - Escopo do Componente */
+:host {
+    --primary-color: #ff2f93;
+    --primary-color-alpha: #ff2f933d;
+    --text-color-dark: #333;
+    --text-color-light: #666;
+    --white: #fff;
+    --border-color: #ddd;
+    --input-bg: #f5f5f5;
+}
+
+/* Wrapper para simular o body original e centralizar */
+.login-page-wrapper {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--primary-color-alpha);
+    overflow: hidden;
+    width: 100%; /* Garante largura total */
+}
+
+.login-container {
+    display: flex;
+    background-color: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 900px;
+    max-width: 90%;
+    overflow: hidden;
+}
+
+.login-form-wrapper {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.logo-section {
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 150px;
+    margin-bottom: 10px;
+}
+
+.welcome-text {
+    font-size: 2.2em;
+    color: var(--text-color-dark);
+    margin-bottom: 10px;
+}
+
+.description-text {
+    font-size: 0.9em;
+    color: var(--text-color-light);
+    line-height: 1.5;
+    max-width: 300px;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+/* Ajuste para pegar o input corretamente no angular */
+.input-group input {
+    width: 100%; 
+    box-sizing: border-box; /* Garante padding correto */
+    padding: 12px 15px 12px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+}
+
+/* Classes para validação (Opcional: adiciona borda vermelha se inválido) */
+.input-group input.ng-invalid.ng-touched {
+    border-color: red;
+}
+
+.input-group .icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-light);
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    color: var(--text-color-light);
+}
+
+.remember-forgot input[type="checkbox"] {
+    margin-right: 5px;
+    accent-color: var(--primary-color);
+}
+
+.forgot-password {
+    color: var(--text-color-light);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.forgot-password:hover {
+    color: var(--primary-color);
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #e62886;
+}
+
+/* Estilo para botão desativado (quando form inválido) */
+.login-button:disabled {
+    background-color: #ff9dc8;
+    cursor: not-allowed;
+}
+
+.social-login {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.social-login p {
+    font-size: 0.9em;
+    color: var(--text-color-light);
+    margin-bottom: 15px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--text-color-dark);
+    font-size: 1.2em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+.signup-link {
+    font-size: 0.9em;
+    color: var(--text-color-light);
+}
+
+.signup-link .signup-now {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.signup-link .signup-now:hover {
+    text-decoration: underline;
+}
+
+.login-image-wrapper {
+    flex: 1;
+    background-color: var(--primary-color);
+    border-radius: 0 20px 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.fitness-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .login-image-wrapper {
+        display: none;
+    }
+
+    .login-form-wrapper {
+        padding: 30px 20px;
+    }
+
+    .welcome-text {
+        font-size: 1.8em;
+    }
+}

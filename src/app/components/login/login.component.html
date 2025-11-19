@@ -1,0 +1,59 @@
+<div class="login-page-wrapper">
+    <div class="login-container">
+        <div class="login-form-wrapper">
+            <div class="logo-section">
+                <img src="assets/Logo_IZ_com_nome.png" alt="IZZI FITNESS Logo" class="logo">
+                <h1 class="welcome-text">Bem-vindo(a)</h1>
+                <p class="description-text">Sua jornada de fitness começa aqui. Faça login para acessar sua conta.</p>
+            </div>
+  
+            <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <div class="input-group">
+                    <input 
+                      type="email" 
+                      placeholder="Email" 
+                      formControlName="email" 
+                      required
+                    >
+                    <i class="fas fa-envelope icon"></i>
+                </div>
+                
+                <div class="input-group">
+                    <input 
+                      type="password" 
+                      placeholder="Senha" 
+                      formControlName="password" 
+                      required
+                    >
+                    <i class="fas fa-lock icon"></i>
+                </div>
+  
+                <div class="remember-forgot">
+                    <label>
+                        <input type="checkbox" formControlName="rememberMe"> Lembrar-me
+                    </label>
+                    <a routerLink="/forgot-password" class="forgot-password">Esqueceu a senha?</a>
+                </div>
+  
+                <button type="submit" class="login-button" [disabled]="loginForm.invalid">Login</button>
+            </form>
+  
+            <div class="social-login">
+                <p>ou</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon apple"><i class="fab fa-apple"></i></a>
+                    <a href="#" class="social-icon google"><i class="fab fa-google"></i></a>
+                    <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+  
+            <div class="signup-link">
+                <p>Não tem uma conta? <a routerLink="/cadastro" class="signup-now">Cadastre-se agora</a></p>
+            </div>
+        </div>
+  
+        <div class="login-image-wrapper">
+            <img src="assets/Imagem_modelo_login.png" alt="Mulher fazendo atividade física" class="fitness-image">
+        </div>
+    </div>
+  </div>
