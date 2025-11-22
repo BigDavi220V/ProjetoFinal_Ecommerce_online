@@ -1,0 +1,20 @@
+<div class="products-page">
+  <div class="album py-5">
+    <div class="container">
+      
+      <h2 class="text-center mb-5" style="color: #333; font-weight: 800; font-family: Helvetica, Arial, sans-serif;">
+        Nossa Coleção
+      </h2>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        
+        @for (item of products; track item.id) {
+          <div class="col">
+            <app-product-card [product]="item"></app-product-card>
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+</div>

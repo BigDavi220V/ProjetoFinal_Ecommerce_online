@@ -1,0 +1,248 @@
+/* =========================================
+   LAYOUT
+   ========================================= */
+.cadastro-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--primary-color-alpha);
+    padding: 20px; /* Garante margem em telas pequenas */
+}
+
+.cadastro-container {
+    display: flex;
+    background-color: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); /* Sombra um pouco mais suave e difusa */
+    width: 950px; /* Levemente mais largo */
+    max-width: 100%;
+    overflow: hidden;
+    min-height: 700px; /* Mais altura para os elementos respirarem */
+}
+
+/* =========================================
+   LADO DO FORMULÁRIO (ESQUERDA)
+   ========================================= */
+.cadastro-form-wrapper {
+    flex: 1;
+    padding: 40px 50px; /* Mais espaço lateral */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center;     /* Centraliza horizontalmente */
+    text-align: center;
+    gap: 10px; /* Espaço inteligente entre os blocos principais (Logo, Titulo, Form) */
+}
+
+/* --- LOGO --- */
+.logo-section {
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 140px; /* Tamanho equilibrado */
+    display: block;
+}
+
+/* --- TÍTULO --- */
+h1 {
+    font-size: 1.8em;
+    color: var(--text-color-dark);
+    margin: 0 0 25px 0; /* Margem apenas embaixo */
+    font-weight: 700;
+}
+
+.cadastro-form {
+    width: 100%;
+    max-width: 340px; /* Levemente mais largo para inputs mais confortáveis */
+}
+
+/* =========================================
+   INPUTS, LABELS E ÍCONES
+   ========================================= */
+.input-group {
+    margin-bottom: 20px; /* Aumentado de 12px para 20px (Melhor leitura) */
+    text-align: left;
+    width: 100%;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.9em;
+    color: var(--text-color-dark);
+    font-weight: 600;
+    margin-bottom: 8px; /* Mais espaço entre label e input */
+    margin-left: 2px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper input {
+    width: 100%;
+    height: 48px; /* Altura fixa para consistência visual moderna */
+    padding: 0 15px 0 45px; /* Padding ajustado para a altura fixa */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1em;
+    background-color: #FAFAFA; /* Fundo sutil para destacar do branco do card */
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.input-wrapper input:focus {
+    border-color: var(--primary-color);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px var(--primary-color-alpha); /* Efeito de foco sutil */
+}
+
+.input-wrapper .icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-light);
+    font-size: 1.1em; /* Ícone um pouco maior */
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+/* Muda a cor do ícone quando o input está focado (Opcional, mas bonito) */
+.input-wrapper input:focus + .icon {
+    color: var(--primary-color);
+}
+
+/* Validação */
+.input-wrapper input.error-border {
+    border-color: var(--error-color);
+    background-color: #fff8f8;
+}
+
+.error-msg {
+    color: var(--error-color);
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding-left: 2px;
+}
+
+/* =========================================
+   BOTÕES E LINKS
+   ========================================= */
+.btn-cadastro {
+    width: 100%;
+    height: 48px; /* Mesma altura dos inputs */
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px; /* Mais separação do último input */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(255, 47, 147, 0.2); /* Sombra sutil na cor da marca */
+}
+
+.btn-cadastro:hover {
+    background-color: #e62886;
+    transform: translateY(-2px); /* Efeito suave de levitação */
+    box-shadow: 0 6px 20px rgba(255, 47, 147, 0.3);
+}
+
+.btn-cadastro:disabled {
+    background-color: #ffb3d6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.login-redirect {
+    margin-top: 25px; /* Mais espaço para o link final */
+    font-size: 0.95em;
+    color: var(--text-color-light);
+}
+
+.login-redirect a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+.login-redirect a:hover {
+    text-decoration: underline;
+    color: #c0006b;
+}
+
+/* Loader Spinner */
+.loader {
+    border: 3px solid rgba(255,255,255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* =========================================
+   LADO DA IMAGEM (DIREITA)
+   ========================================= */
+.cadastro-image-wrapper {
+    flex: 1;
+    background-color: var(--primary-color);
+    border-radius: 0 20px 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.fitness-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+/* Efeito de zoom suave na imagem ao passar o mouse na div (Opcional) */
+.cadastro-image-wrapper:hover .fitness-image {
+    transform: scale(1.05);
+}
+
+/* =========================================
+   RESPONSIVIDADE
+   ========================================= */
+@media (max-width: 900px) {
+    .cadastro-container {
+        flex-direction: column;
+        width: 100%;
+        max-width: 450px;
+        min-height: auto;
+    }
+
+    .cadastro-image-wrapper {
+        display: none;
+    }
+
+    .cadastro-form-wrapper {
+        padding: 40px 25px;
+    }
+
+    .cadastro-form {
+        max-width: 100%;
+    }
+}

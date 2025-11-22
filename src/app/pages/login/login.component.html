@@ -1,43 +1,69 @@
 <div class="login-page-wrapper">
     <div class="login-container">
+        
         <div class="login-form-wrapper">
             <div class="logo-section">
                 <img src="assets/Logo_IZ_com_nome.png" alt="IZZI FITNESS Logo" class="logo">
                 <h1 class="welcome-text">Bem-vindo(a)</h1>
                 <p class="description-text">Sua jornada de fitness começa aqui. Faça login para acessar sua conta.</p>
             </div>
-  
+
             <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <div class="input-group">
-                    <input 
-                      type="email" 
-                      placeholder="Email" 
-                      formControlName="email" 
-                      required
-                    >
-                    <i class="fas fa-envelope icon"></i>
-                </div>
                 
                 <div class="input-group">
                     <input 
-                      type="password" 
-                      placeholder="Senha" 
-                      formControlName="password" 
-                      required
+                        type="email" 
+                        placeholder="Email" 
+                        formControlName="email"
+                        [class.error-border]="f.email.invalid && f.email.touched"
                     >
-                    <i class="fas fa-lock icon"></i>
+                    <i class="fas fa-envelope icon"></i>
                 </div>
-  
+                @if (f.email.invalid && f.email.touched) {
+                    <div class="error-msg">
+                        @if (f.email.hasError('required')) { <span>O e-mail é obrigatório.</span> }
+                        @if (f.email.hasError('email')) { <span>Digite um e-mail válido.</span> }
+                    </div>
+                }
+
+                <div class="input-group">
+                    <input 
+                        [type]="showPassword() ? 'text' : 'password'" 
+                        placeholder="Senha" 
+                        formControlName="password"
+                        [class.error-border]="f.password.invalid && f.password.touched"
+                    >
+                    <i 
+                        class="fas icon" 
+                        [class.fa-lock]="!showPassword()" 
+                        [class.fa-unlock]="showPassword()"
+                        (click)="togglePasswordVisibility()"
+                        style="cursor: pointer; pointer-events: all;"
+                        title="Mostrar/Ocultar senha"
+                    ></i>
+                </div>
+                @if (f.password.invalid && f.password.touched) {
+                    <div class="error-msg">
+                        <span>A senha é obrigatória.</span>
+                    </div>
+                }
+
                 <div class="remember-forgot">
                     <label>
                         <input type="checkbox" formControlName="rememberMe"> Lembrar-me
                     </label>
                     <a routerLink="/forgot-password" class="forgot-password">Esqueceu a senha?</a>
                 </div>
-  
-                <button type="submit" class="login-button" [disabled]="loginForm.invalid">Login</button>
+
+                <button type="submit" class="login-button" [disabled]="loginForm.invalid || isLoading()">
+                    @if (isLoading()) {
+                        <i class="fas fa-spinner fa-spin"></i> Carregando...
+                    } @else {
+                        Login
+                    }
+                </button>
             </form>
-  
+
             <div class="social-login">
                 <p>ou</p>
                 <div class="social-icons">
@@ -46,14 +72,14 @@
                     <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
                 </div>
             </div>
-  
+
             <div class="signup-link">
                 <p>Não tem uma conta? <a routerLink="/cadastro" class="signup-now">Cadastre-se agora</a></p>
             </div>
         </div>
-  
+
         <div class="login-image-wrapper">
             <img src="assets/Imagem_modelo_login.png" alt="Mulher fazendo atividade física" class="fitness-image">
         </div>
     </div>
-  </div>
+</div>

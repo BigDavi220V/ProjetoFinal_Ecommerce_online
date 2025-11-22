@@ -1,0 +1,243 @@
+/* =========================================
+   WRAPPER DE CENTRALIZAÇÃO (PÁGINA)
+   ========================================= */
+.login-page-wrapper {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+    width: 100%;
+    min-height: 100vh;       /* Garante altura total da tela */
+    background-color: var(--primary-color-alpha); /* Usa variável global ou cor fixa */
+    padding: 20px;           /* Espaçamento para não colar nas bordas em mobile */
+    box-sizing: border-box;
+}
+
+/* =========================================
+   CARD DO LOGIN
+   ========================================= */
+.login-container {
+    display: flex;
+    background-color: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 900px;
+    max-width: 100%;
+    overflow: hidden;
+    min-height: 500px; 
+}
+
+/* =========================================
+   LADO ESQUERDO (FORMULÁRIO)
+   ========================================= */
+.login-form-wrapper {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Logo e Textos */
+.logo-section { margin-bottom: 30px; }
+.logo { width: 150px; margin-bottom: 10px; }
+
+.welcome-text {
+    font-size: 2.2em;
+    color: var(--text-color-dark);
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.description-text {
+    font-size: 0.9em;
+    color: var(--text-color-light);
+    line-height: 1.5;
+    max-width: 300px;
+}
+
+/* Formulário Container */
+.login-form {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+}
+
+/* =========================================
+   INPUTS E ÍCONES
+   ========================================= */
+.input-group {
+    position: relative;
+    margin-bottom: 15px; 
+}
+
+.input-group input {
+    width: 100%; /* Ocupa 100% do container pai (input-group) */
+    padding: 12px 15px 12px 40px; /* 40px na esquerda para o ícone */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box; /* Importante para o padding não estourar a largura */
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+}
+
+/* Classe de Erro (Borda Vermelha) */
+.input-group input.error-border {
+    border-color: var(--error-color);
+    background-color: #fff8f8;
+}
+
+/* Ícones dentro do Input */
+.input-group .icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-light);
+    z-index: 1;
+}
+
+/* Mensagem de Erro (Texto) */
+.error-msg {
+    color: var(--error-color);
+    font-size: 0.8em;
+    text-align: left;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    padding-left: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   CHECKBOX E ESQUECI SENHA
+   ========================================= */
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    color: var(--text-color-light);
+}
+
+.remember-forgot input[type="checkbox"] {
+    margin-right: 5px;
+    accent-color: var(--primary-color);
+}
+
+.forgot-password {
+    color: var(--text-color-light);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.forgot-password:hover { color: var(--primary-color); }
+
+/* =========================================
+   BOTÃO PRINCIPAL
+   ========================================= */
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-button:hover { background-color: #e62886; }
+
+.login-button:disabled {
+    background-color: #ffb3d6;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   REDES SOCIAIS E SIGNUP
+   ========================================= */
+.social-login { margin-bottom: 20px; width: 100%; max-width: 300px; }
+.social-login p { font-size: 0.9em; color: var(--text-color-light); margin-bottom: 15px; }
+.social-icons { display: flex; justify-content: center; gap: 15px; }
+
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--text-color-dark);
+    font-size: 1.2em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+.signup-link { font-size: 0.9em; color: var(--text-color-light); }
+.signup-link .signup-now {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+.signup-link .signup-now:hover { text-decoration: underline; }
+
+/* =========================================
+   LADO DIREITO (IMAGEM)
+   ========================================= */
+.login-image-wrapper {
+    flex: 1;
+    background-color: var(--primary-color);
+    border-radius: 0 20px 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.fitness-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        width: 100%;
+        max-width: 450px;
+        min-height: auto;
+    }
+
+    .login-image-wrapper { display: none; } /* Esconde imagem no celular */
+    
+    .login-form-wrapper { 
+        padding: 30px 20px; 
+    }
+    
+    .welcome-text { font-size: 1.8em; }
+}

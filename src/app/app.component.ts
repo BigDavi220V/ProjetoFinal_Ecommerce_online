@@ -1,12 +1,55 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  template: `
+    @if (showLayout()) {
+      <app-header></app-header>
+    }
+    
+    <router-outlet></router-outlet>
+    
+    @if (showLayout()) {
+      <app-footer></app-footer>
+    }
+  `
 })
-export class AppComponent {
-  title = 'vista.izzi';
+export class AppComponent implements OnInit {
+  private router = inject(Router);
+  
+  // Signal para controlar a visibilidade (True = mostra menu, False = esconde)
+  showLayout = signal(false);
+
+  constructor() {
+    // Inscreve-se nos eventos de rota para detectar mudanças de URL
+    this.router.events.pipe(
+      // Filtra apenas quando a navegação termina (para ter certeza da URL final)
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.checkLayout(event.url);
+    });
+  }
+
+  ngOnInit() {
+    // Verificação inicial caso a página seja recarregada
+    this.checkLayout(this.router.url);
+  }
+
+  private checkLayout(url: string) {
+    // Lista de rotas onde o Header/Footer NÃO devem aparecer
+    const hiddenRoutes = ['/login', '/cadastro', '/forgot-password'];
+
+    // Verifica se a URL atual começa com alguma das rotas proibidas
+    // Usamos 'includes' para pegar casos como '/login?returnUrl=...'
+    const isHidden = hiddenRoutes.some(route => url.includes(route));
+
+    // Se for uma rota escondida, showLayout vira false. Caso contrário, true.
+    this.showLayout.set(!isHidden);
+  }
 }

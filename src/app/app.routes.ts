@@ -3,12 +3,37 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: '',
-        loadComponent:()=>
-          import('./components/login/login.component').then(m=> m.LoginComponent),
-      },
+        redirectTo: 'login',
+        pathMatch: 'full'
+    },
+
+    {
+        path: 'login',
+        title: 'Login | IZZI FITNESS',
+        loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
+    },
+
     {
         path: 'cadastro',
-        loadComponent:()=>
-          import('./components/cadastro/cadastro.component').then(m=> m.CadastroComponent),
-      },
+        title: 'Cadastro | IZZI FITNESS',
+        loadComponent: () => import('./pages/cadastro/cadastro.component').then(m => m.CadastroComponent) // Assumindo que você criará este
+    },
+
+    {
+        path: 'forgot-password',//redefinir-password
+        title: 'Redefinir senha | IZZI FITNESS',
+        loadComponent: () => import('./pages/redefinir-password/redefinir-password.component').then(m => m.RedefinirPasswordComponent) // Assumindo que você criará este
+    },
+
+    {
+        path: 'home',
+        title: 'Inicio | IZZI FITNESS',
+        loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) // Assumindo que você criará este
+    },
+    {
+        path: 'produtos',
+        title: 'Produtos | IZZI FITNESS',
+        loadComponent: () => import('./pages/produtos/produtos.component').then(m => m.ProductsComponent) // Assumindo que você criará este
+    },
+
 ];

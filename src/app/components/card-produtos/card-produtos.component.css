@@ -1,0 +1,65 @@
+.name_productor {
+    font-family: 'Helvetica', Arial, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: black;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.text_price {
+    font-family: 'Helvetica', Arial, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: black;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.display_button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.btn_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    align-items: center;
+}
+
+.comprar_produto, .carrinho_produto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 280px;
+    height: 45px;
+    background-color: pink; /* Pode usar var(--primary-color) aqui */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.comprar_produto:hover, .carrinho_produto:hover {
+    filter: brightness(0.9);
+}
+
+.ir_comprar {
+    text-decoration: none;
+    color: beige; 
+    font-size: medium;
+    font-weight: 700;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.carrinho_compras {
+    color: beige;
+    font-size: 1.5rem;
+    display: flex;
+}

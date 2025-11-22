@@ -1,0 +1,100 @@
+<div class="cadastro-page-wrapper">
+    <div class="cadastro-container">
+        
+        <div class="cadastro-form-wrapper">
+            
+            <div class="logo-section">
+                <img src="assets/Logo_IZ_com_nome.png" alt="IZZI FITNESS Logo" class="logo">
+            </div>
+
+            <h1>Crie sua Conta</h1>
+            
+            <form class="cadastro-form" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+                
+                <div class="input-group">
+                    <label for="nome">Nome Completo</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            formControlName="nome" 
+                            placeholder="Seu nome"
+                            [class.error-border]="f.nome.invalid && f.nome.touched"
+                        >
+                        <i class="fas fa-user icon"></i>
+                    </div>
+                    @if (f.nome.invalid && f.nome.touched) {
+                        <small class="error-msg">O nome é obrigatório.</small>
+                    }
+                </div>
+
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            formControlName="email" 
+                            placeholder="seu.email@exemplo.com"
+                            [class.error-border]="f.email.invalid && f.email.touched"
+                        >
+                        <i class="fas fa-envelope icon"></i>
+                    </div>
+                    @if (f.email.invalid && f.email.touched) {
+                        <small class="error-msg">Digite um e-mail válido.</small>
+                    }
+                </div>
+
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="senha" 
+                            formControlName="senha" 
+                            placeholder="Mínimo 8 caracteres"
+                            [class.error-border]="f.senha.invalid && f.senha.touched"
+                        >
+                        <i class="fas fa-lock icon"></i>
+                    </div>
+                    @if (f.senha.invalid && f.senha.touched) {
+                        <small class="error-msg">Mínimo de 8 caracteres.</small>
+                    }
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmar-senha">Confirmar Senha</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="confirmar-senha" 
+                            formControlName="confirmarSenha"
+                            [class.error-border]="signupForm.hasError('passwordMismatch') && f.confirmarSenha.touched"
+                        >
+                        <i class="fas fa-lock icon"></i>
+                    </div>
+                    @if (signupForm.hasError('passwordMismatch') && f.confirmarSenha.touched) {
+                        <small class="error-msg">As senhas não conferem.</small>
+                    }
+                </div>
+
+                <button type="submit" class="btn-cadastro" [disabled]="signupForm.invalid || isLoading()">
+                    @if (isLoading()) {
+                        <span class="loader"></span> Cadastrando...
+                    } @else {
+                        Cadastrar
+                    }
+                </button>
+                
+                <div class="login-redirect">
+                    <p>Já tem uma conta? <a routerLink="/login">Faça Login</a></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="cadastro-image-wrapper">
+            <img src="assets/Imagem_modelo_login.png" alt="Fitness" class="fitness-image">
+        </div>
+
+    </div>
+</div>

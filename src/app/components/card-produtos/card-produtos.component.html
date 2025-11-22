@@ -1,0 +1,21 @@
+<div class="card shadow-sm h-100">
+  <img [src]="product().image" [alt]="product().name" class="card-img-top" style="width: 100%; height: auto; object-fit: cover;">
+
+  <div class="card-body">
+    <p class="name_productor">{{ product().name }}</p>
+    <p class="text_price">{{ formatPrice(product().price) }}</p>
+    
+    <div class="display_button">
+      <div class="btn_group">
+        <button type="button" class="comprar_produto">
+          <span class="ir_comprar">COMPRAR</span>
+        </button>
+        <button type="button" class="carrinho_produto">
+          <div class="carrinho_compras">
+             <i class="ph ph-shopping-cart"></i>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
