@@ -24,11 +24,11 @@ import { RouterLink } from '@angular/router';
 
             <li class="menu_item dropdown-container">
               <a routerLink="/produtos" class="menu_link">Produtos</a>
-              <ul class="dropdown-menu">
+              <!-- <ul class="dropdown-menu">
                 <li><a routerLink="/leggings">Leggings</a></li>
                 <li><a routerLink="/tops">Tops e Sutiãs</a></li>
                 <li><a routerLink="/blusas">Blusas e Camisetas</a></li>
-              </ul>
+              </ul> -->
             </li>
             
             <li class="menu_item"><a routerLink="/contato" class="menu_link">Contato</a></li>
