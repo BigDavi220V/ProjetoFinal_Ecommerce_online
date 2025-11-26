@@ -1,0 +1,129 @@
+/* --- Container Geral --- */
+.product-details-container {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
+    padding-top: 2rem;
+  }
+  
+  /* --- Imagens (Esquerda) --- */
+  .main-image-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .main-image {
+    max-height: 600px;
+    width: 100%;
+    object-fit: contain; /* Garante visualização completa */
+    transition: transform 0.4s ease;
+  }
+  
+  .main-image:hover {
+    transform: scale(1.03); /* Zoom suave */
+  }
+  
+  /* Miniaturas */
+  .thumbnail-item {
+    width: 80px;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+  }
+  
+  .thumbnail-item:hover, .thumbnail-item.active {
+    border-color: #000; /* Seleção preta sólida */
+    opacity: 1;
+  }
+  
+  .thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* --- Informações (Direita) --- */
+  .product-title {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  
+  .product-price {
+    font-size: 2rem;
+    color: #000;
+  }
+  
+  .product-description {
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  
+  /* --- Seletor de Tamanhos --- */
+  .size-selector-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    color: #333;
+    font-weight: 600;
+    border-radius: 4px; /* Quadrado com cantos leves */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .size-selector-btn:hover {
+    border-color: #000;
+    background-color: #f8f9fa;
+  }
+  
+  .size-selector-btn.active {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+    transform: scale(1.05); /* Leve destaque ao selecionar */
+  }
+  
+  /* --- Botões de Ação --- */
+  .btn-dark {
+    background-color: #000;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-dark:hover {
+    background-color: #333; /* Cinza escuro no hover */
+  }
+  
+  .ls-1 {
+    letter-spacing: 1px;
+  }
+  
+  /* --- Animações Úteis --- */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Responsividade */
+  @media (max-width: 991px) {
+    .product-info-col {
+      margin-top: 2rem;
+    }
+    .main-image {
+      max-height: 400px;
+    }
+  }

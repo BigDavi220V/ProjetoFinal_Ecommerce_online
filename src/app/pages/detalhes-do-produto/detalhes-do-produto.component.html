@@ -1,0 +1,115 @@
+<div class="product-details-container container my-5">
+    @if (product) {
+      <div class="row gx-5">
+        <!-- ========================================== -->
+        <!-- COLUNA ESQUERDA: Carrossel de Imagens      -->
+        <!-- ========================================== -->
+        <div class="col-lg-7 mb-4 mb-lg-0">
+          <div class="image-gallery sticky-top" style="top: 20px; z-index: 1;">
+            
+            <!-- Imagem Principal (Destaque) -->
+            <div class="main-image-container mb-3 shadow-sm">
+              <img [src]="product.image" [alt]="product.name" class="img-fluid main-image">
+            </div>
+  
+            <!-- Miniaturas (Thumbnails) -->
+            <div class="thumbnails-row d-flex gap-2 justify-content-center">
+              <!-- Simulando miniaturas (usando a mesma imagem como exemplo) -->
+              <div class="thumbnail-item active">
+                <img [src]="product.image" [alt]="product.name" class="img-fluid">
+              </div>
+              <div class="thumbnail-item">
+                <img [src]="product.image" alt="Thumbnail 2" class="img-fluid" style="filter: hue-rotate(45deg);">
+              </div>
+              <div class="thumbnail-item">
+                <img [src]="product.image" alt="Thumbnail 3" class="img-fluid" style="filter: hue-rotate(90deg);">
+              </div>
+               <div class="thumbnail-item">
+                <img [src]="product.image" alt="Thumbnail 4" class="img-fluid" style="filter: grayscale(100%);">
+              </div>
+            </div>
+  
+          </div>
+        </div>
+  
+        <!-- ========================================== -->
+        <!-- COLUNA DIREITA: Informações e Ações        -->
+        <!-- ========================================== -->
+        <div class="col-lg-5 product-info-col">
+          <div class="d-flex flex-column h-100">
+            
+            <!-- Título e Preço -->
+            <div class="mb-4 pb-3 border-bottom">
+              <h1 class="product-title display-6 fw-bold mb-2">{{ product.name }}</h1>
+              <div class="d-flex align-items-center gap-3">
+                <h2 class="product-price text-dark fw-bold mb-0">{{ formatPrice(product.price) }}</h2>
+                <span class="badge bg-light text-dark border">Frete Grátis</span>
+              </div>
+              <p class="text-muted mt-2 mb-0"><small>Em até 12x sem juros no cartão</small></p>
+            </div>
+  
+            <!-- Descrição -->
+            <div class="mb-4">
+              <p class="product-description text-secondary">
+                Ideal para treinos de alta performance. Tecido respirável, costuras reforçadas e design que valoriza o corpo. 
+                Sinta o conforto e a liberdade de movimento.
+              </p>
+            </div>
+  
+            <!-- Seletor de Tamanhos -->
+            <div class="mb-4">
+              <h6 class="fw-bold mb-3 text-uppercase small ls-1">Escolha o Tamanho:</h6>
+              <div class="d-flex flex-wrap gap-2">
+                @for (size of sizes; track size) {
+                  <button 
+                    type="button"
+                    class="size-selector-btn btn"
+                    [class.active]="selectedSize === size"
+                    (click)="selectSize(size)">
+                    {{ size }}
+                  </button>
+                }
+              </div>
+              @if (!selectedSize) {
+                <small class="text-danger mt-2 d-block fade-in">
+                  <i class="bi bi-exclamation-circle"></i> Por favor, selecione um tamanho.
+                </small>
+              }
+            </div>
+  
+            <!-- Botões de Ação -->
+            <div class="action-buttons d-grid gap-3 mt-4">
+              <button class="btn btn-dark btn-lg py-3 text-uppercase fw-bold shadow-sm" (click)="adicionarAoCarrinho()">
+                Adicionar ao Carrinho
+              </button>
+              
+              <button class="btn btn-outline-secondary py-2 fw-semibold" (click)="voltar()">
+                Continuar Comprando
+              </button>
+            </div>
+  
+            <!-- Garantias (Footer da info) -->
+            <div class="mt-5 pt-4 border-top">
+               <div class="d-flex align-items-center gap-3 text-muted small">
+                  <span><i class="bi bi-shield-check"></i> Compra Segura</span>
+                  <span><i class="bi bi-arrow-repeat"></i> 7 dias para troca</span>
+               </div>
+            </div>
+  
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Estado: Produto não encontrado -->
+      <div class="text-center py-5 empty-state">
+        <div class="mb-3">
+          <i class="bi bi-search display-1 text-muted"></i>
+        </div>
+        <h2 class="fw-bold text-secondary">Produto não encontrado</h2>
+        <p class="text-muted">O produto que você procura não está disponível ou não existe.</p>
+        <button class="btn btn-primary mt-3 px-4 rounded-pill fw-bold" (click)="voltar()">
+          Voltar para a Loja
+        </button>
+      </div>
+    }
+  </div>

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { DetalhesDoProdutoComponent } from './pages/detalhes-do-produto/detalhes-do-produto.component';
 
 export const routes: Routes = [
     {
@@ -35,5 +36,11 @@ export const routes: Routes = [
         title: 'Produtos | IZZI FITNESS',
         loadComponent: () => import('./pages/produtos/produtos.component').then(m => m.ProductsComponent) // Assumindo que você criará este
     },
+
+    { 
+        path: 'produto/:id', 
+        component: DetalhesDoProdutoComponent,
+        title: 'Detalhes do Produto' 
+      },
 
 ];

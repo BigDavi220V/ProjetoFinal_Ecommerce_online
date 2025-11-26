@@ -1,0 +1,60 @@
+/* Container da Página */
+.cart-page {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
+}
+
+/* Imagem do Produto na Lista */
+.cart-img-wrapper {
+    width: 80px;
+    height: 80px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cart-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Controle de Quantidade */
+.quantity-control {
+    background-color: #fff;
+    border-color: #dee2e6 !important;
+}
+
+.quantity-control button:hover {
+    background-color: #f8f9fa;
+}
+
+/* Cartões */
+.card {
+    border-radius: 12px;
+}
+
+/* Resumo (Sidebar) */
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+/* Botões */
+.btn-dark {
+    background-color: #000;
+    transition: background-color 0.2s;
+}
+
+.btn-dark:hover {
+    background-color: #333;
+}
+
+/* Ajustes Mobile */
+@media (max-width: 768px) {
+    .cart-item-row {
+        flex-wrap: wrap;
+    }
+    .quantity-control {
+        margin-top: 10px;
+    }
+}
