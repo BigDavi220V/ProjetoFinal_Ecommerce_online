@@ -43,4 +43,10 @@ export const routes: Routes = [
         title: 'Detalhes do Produto' 
       },
 
+      {
+        path: 'carrinho',
+        title: 'Carrinho | IZZI FITNESS',
+        loadComponent: () => import('./pages/carrinho/carrinho.component').then(m => m.CarrinhoComponent) // Assumindo que você criará este
+      }
+
 ];
