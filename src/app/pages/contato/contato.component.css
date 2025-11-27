@@ -1,0 +1,280 @@
+/* Variáveis de cor (Mesmas do Login para consistência) */
+:root {
+    --primary-pink: #ff2f93;
+    --primary-alpha: #ff2f933d; /* Fundo transparente igual ao login */
+    --text-dark: #333;
+    --text-light: #666;
+    --white: #fff;
+    --border: #ddd;
+    --bg-input: #fff; /* Fundo branco para inputs */
+}
+
+/* Wrapper que ocupa a tela toda (Fundo Rosa Claro) */
+.page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--primary-alpha);
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* O Card Central (Baseado no .login-container) */
+.contact-container {
+    display: flex;
+    background-color: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 1500px;
+    max-width: 100%;
+    min-height: 1000px;
+    overflow: hidden;
+}
+
+/* --- LADO ESQUERDO (FORMULÁRIO) --- */
+.form-wrapper {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.header-section {
+    margin-bottom: 25px;
+}
+
+.logo {
+    width: 120px;
+    margin-bottom: 15px;
+}
+
+.title {
+    font-size: 2em;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 0.95em;
+    color: var(--text-light);
+    line-height: 1.4;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Formulário */
+.contact-form {
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+/* Estilo unificado para Input e Textarea */
+.input-group input, 
+.input-group textarea {
+    width: 100%;
+    /* Padding esquerdo maior (45px) para caber o ícone */
+    padding: 12px 15px 12px 45px; 
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: var(--bg-input);
+    font-family: inherit;
+    box-sizing: border-box; 
+    color: var(--text-dark);
+}
+
+.input-group textarea {
+    resize: none; /* Impede redimensionar manual */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Efeito de Foco (Glow Rosa) */
+.input-group input:focus,
+.input-group textarea:focus {
+    border-color: var(--primary-pink);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 47, 147, 0.1);
+}
+
+/* Validação Visual (Borda vermelha se erro) */
+.input-group input.error {
+    border-color: #ff4444;
+}
+
+/* Ícones dentro do input */
+.icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 1.2rem;
+    pointer-events: none; /* Permite clicar através do ícone */
+    transition: color 0.3s;
+}
+
+/* Ícone do textarea fica no topo, não no centro */
+.textarea-icon {
+    top: 20px; 
+    transform: none;
+}
+
+/* Quando foca no input, pinta o ícone */
+.input-group input:focus + .icon,
+.input-group textarea:focus + .icon {
+    color: var(--primary-pink);
+}
+
+/* Botão Principal */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-pink);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #d6006e; /* Tom mais escuro no hover */
+}
+
+.btn-primary:disabled {
+    background-color: #ffb3d9;
+    cursor: not-allowed;
+}
+
+/* Footer Social */
+.footer-links {
+    margin-top: 20px;
+}
+
+.footer-links p {
+    font-size: 0.9em;
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.social-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-btn:hover {
+    background-color: var(--primary-pink);
+    color: white;
+    border-color: var(--primary-pink);
+    transform: translateY(-2px);
+}
+
+/* --- LADO DIREITO (IMAGEM) --- */
+.image-wrapper {
+    flex: 1;
+    background-color: var(--primary-pink);
+    border-radius: 0 20px 20px 0; /* Arredondado só na direita */
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.side-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Um pouco de opacidade para fundir com o fundo rosa */
+    opacity: 0.95; 
+}
+
+/* Overlay com infos extras sobre a imagem */
+.info-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px;
+    /* Gradiente preto para garantir leitura do texto branco */
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.info-item i {
+    color: var(--primary-pink);
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Responsividade (Mobile) */
+@media (max-width: 900px) {
+    .contact-container {
+        flex-direction: column;
+        width: 100%;
+        max-width: 450px;
+        height: auto;
+    }
+
+    .image-wrapper {
+        display: none; /* Esconde a imagem no mobile para focar no form */
+    }
+
+    .form-wrapper {
+        padding: 40px 25px;
+    }
+
+    .title {
+        font-size: 1.8em;
+    }
+}

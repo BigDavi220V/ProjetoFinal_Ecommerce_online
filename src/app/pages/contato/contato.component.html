@@ -1,1 +1,69 @@
-<p>contato works!</p>
+<div class="page-wrapper">
+    <div class="contact-container">
+        
+        <!-- LADO ESQUERDO: Formulário -->
+        <div class="form-wrapper">
+            <div class="header-section">
+                <img src="assets/Logo_IZ_com_nome.png" alt="IZZI FITNESS Logo" class="logo">
+                <h1 class="title">Fale Conosco</h1>
+                <p class="description">Estamos prontos para te atender. Mande sua dúvida ou sugestão!</p>
+            </div>
+  
+            <form [formGroup]="contactForm" (ngSubmit)="enviar()" class="contact-form">
+                <div class="input-group">
+                    <input type="text" formControlName="name" placeholder="Nome Completo" [class.error]="contactForm.get('name')?.invalid && contactForm.get('name')?.touched">
+                    <i class="ph ph-user icon"></i>
+                </div>
+  
+                <div class="input-group">
+                    <input type="email" formControlName="email" placeholder="Seu E-mail" [class.error]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+                    <i class="ph ph-envelope icon"></i>
+                </div>
+  
+                <div class="input-group">
+                    <input type="text" formControlName="subject" placeholder="Assunto">
+                    <i class="ph ph-tag icon"></i>
+                </div>
+  
+                <div class="input-group textarea-group">
+                    <textarea formControlName="message" rows="4" placeholder="Sua mensagem..."></textarea>
+                    <i class="ph ph-chat-text icon textarea-icon"></i>
+                </div>
+  
+                <button type="submit" class="btn-primary" [disabled]="contactForm.invalid || isSubmitting()">
+                    @if (isSubmitting()) {
+                        ENVIANDO...
+                    } @else {
+                        ENVIAR MENSAGEM
+                    }
+                </button>
+            </form>
+  
+            <div class="footer-links">
+                <p>Ou chame nas redes:</p>
+                <div class="social-icons">
+                    <a href="#" class="social-btn instagram"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="#" class="social-btn whatsapp"><i class="ph ph-whatsapp-logo"></i></a>
+                    <a href="#" class="social-btn facebook"><i class="ph ph-facebook-logo"></i></a>
+                </div>
+            </div>
+        </div>
+  
+        <!-- LADO DIREITO: Imagem e Informações -->
+        <div class="image-wrapper">
+            <img src="assets/Modelo_contato.png" alt="Atendimento Fitness" class="side-image">
+            
+            <!-- Overlay com Informações de Contato Rápidas -->
+            <div class="info-overlay">
+                <div class="info-item">
+                    <i class="ph ph-phone-call"></i>
+                    <span>(11) 98765-4321</span>
+                </div>
+                <!-- <div class="info-item">
+                    <i class="ph ph-envelope-simple"></i>
+                    <span><p>contato@izzifitness.com</p></span>
+                </div> -->
+            </div>
+        </div>
+    </div>
+  </div>
