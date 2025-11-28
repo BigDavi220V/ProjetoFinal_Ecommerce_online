@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>Meu Perfil</h1>
+
+  <div *ngIf="user">
+    <h2>Dados Pessoais</h2>
+    <p><strong>Nome:</strong> {{ user.name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+  </div>
+
+  <div *ngIf="purchaseHistory">
+    <h2>Histórico de Compras</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Itens</th>
+          <th>Total</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let purchase of purchaseHistory">
+          <td>{{ purchase.date | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ purchase.items.join(', ') }}</td>
+          <td>{{ purchase.total | currency: 'BRL' }}</td>
+          <td>{{ purchase.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

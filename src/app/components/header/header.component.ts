@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -24,20 +24,19 @@ import { RouterLink } from '@angular/router';
 
             <li class="menu_item dropdown-container">
               <a routerLink="/produtos" class="menu_link">Produtos</a>
-              <!-- <ul class="dropdown-menu">
-                <li><a routerLink="/leggings">Leggings</a></li>
-                <li><a routerLink="/tops">Tops e Sutiãs</a></li>
-                <li><a routerLink="/blusas">Blusas e Camisetas</a></li>
-              </ul> -->
             </li>
             
             <li class="menu_item"><a routerLink="/contato" class="menu_link">Contato</a></li>
             <li class="menu_item"><a routerLink="/carrinho" class="menu_link" aria-label="Carrinho de Compras">🛒Carrinho</a></li>
             
-            <li class="menu_item">
+            <li class="menu_item dropdown-container">
               <div class="icon_login">
                 <i class="ph ph-user"></i>
               </div>
+              <ul class="dropdown-menu login-dropdown">
+                <li><a routerLink="/perfil">Meu Perfil</a></li>
+                <li><a (click)="logout()">Logout</a></li>
+              </ul>
             </li>
           </ul>
         </nav>
@@ -105,6 +104,18 @@ import { RouterLink } from '@angular/router';
     .dropdown-container:hover .dropdown-menu {
       display: block;
     }
+
+    .login-dropdown {
+      right: 0;
+      left: auto;
+    }
   `]
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  constructor(private router: Router) {}
+
+  logout() {
+    // Lógica de logout (limpar tokens, etc.) será adicionada aqui
+    this.router.navigate(['/login']);
+  }
+}

@@ -9,15 +9,19 @@ import { FooterComponent } from './components/footer/footer.component';
   standalone: true,
   imports: [RouterOutlet, HeaderComponent, FooterComponent],
   template: `
-    @if (showLayout()) {
-      <app-header></app-header>
-    }
-    
-    <router-outlet></router-outlet>
-    
-    @if (showLayout()) {
-      <app-footer></app-footer>
-    }
+    <div class="app-container">
+      @if (showLayout()) {
+        <app-header></app-header>
+      }
+      
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+      
+      @if (showLayout()) {
+        <app-footer></app-footer>
+      }
+    </div>
   `
 })
 export class AppComponent implements OnInit {

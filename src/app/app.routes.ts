@@ -53,6 +53,12 @@ export const routes: Routes = [
         path: 'contato',
         title: 'Contato | IZZI FITNESS',
         loadComponent: () => import('./pages/contato/contato.component').then(m => m.ContactComponent) // Assumindo que você criará este
-      }
+      },
+
+      {
+        path: 'perfil',
+        title: 'Perfil | IZZI FITNESS',
+        loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent)
+      },
 
 ];
