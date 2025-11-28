@@ -1,60 +1,165 @@
-/* Container da Página */
-.cart-page {
+/* =========================================
+   1. ESTILOS GERAIS & COMPONENTES
+   ========================================= */
+
+   .cart-page {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: #333;
+    
+    /* ADICIONE ISSO: */
+    /* 100vh é a altura total da tela. 
+       O cálculo subtrai +/- o tamanho do Header e Footer (ex: 250px)
+       para garantir que não crie barra de rolagem desnecessária. */
+    min-height: calc(100vh - 300px); 
+    
+    /* Alternativa simples se não quiser calcular pixels: */
+    /* min-height: 80vh; */
 }
 
-/* Imagem do Produto na Lista */
+/* --- Títulos --- */
+h1, h4, h5 {
+    letter-spacing: -0.5px; /* Deixa o texto mais moderno */
+}
+
+/* --- Wrapper da Imagem --- */
 .cart-img-wrapper {
     width: 80px;
     height: 80px;
+    flex-shrink: 0; /* Impede a imagem de amassar */
     background-color: #f8f9fa;
     border-radius: 8px;
     overflow: hidden;
+    position: relative;
 }
 
 .cart-img-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Garante que a foto preencha o quadrado */
 }
 
-/* Controle de Quantidade */
+/* --- Controle de Quantidade --- */
 .quantity-control {
     background-color: #fff;
     border-color: #dee2e6 !important;
+    height: 38px; /* Altura fixa para alinhar */
+}
+
+.quantity-control button {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+    transition: background 0.2s;
 }
 
 .quantity-control button:hover {
-    background-color: #f8f9fa;
+    background-color: #f0f0f0;
 }
 
-/* Cartões */
-.card {
-    border-radius: 12px;
+/* --- Botão Remover (Trash) --- */
+.btn-link.text-danger {
+    opacity: 0.7;
+    transition: opacity 0.2s;
 }
 
-/* Resumo (Sidebar) */
+.btn-link.text-danger:hover {
+    opacity: 1;
+}
+
+/* --- Sidebar / Resumo --- */
+/* Forçamos a cor de fundo para garantir contraste */
 .bg-light {
-    background-color: #f8f9fa !important;
+    background-color: #f8f9fa !important; 
 }
 
-/* Botões */
+/* Botão Finalizar Compra */
 .btn-dark {
-    background-color: #000;
-    transition: background-color 0.2s;
+    background-color: #111;
+    border: none;
+    transition: all 0.3s ease;
 }
 
 .btn-dark:hover {
     background-color: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* Ajustes Mobile */
-@media (max-width: 768px) {
+/* =========================================
+   2. RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================= */
+
+/* --- CELULAR (Até 576px) --- */
+@media (max-width: 576px) {
+    
+    /* Ajuste da Linha do Item */
     .cart-item-row {
-        flex-wrap: wrap;
+        flex-wrap: wrap; /* Permite quebrar linha se necessário */
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
     }
+
+    /* Imagem um pouco menor no celular */
+    .cart-img-wrapper {
+        width: 70px;
+        height: 70px;
+        margin-right: 15px !important; /* Sobrescreve o me-4 do Bootstrap */
+    }
+
+    /* Nome do Produto */
+    .cart-item-row h5 {
+        font-size: 0.95rem; /* Texto levemente menor */
+        margin-bottom: 2px;
+    }
+
+    /* Área de Controles (Quantidade/Remover) */
+    /* Como você usou 'd-flex align-items-center gap-4' no HTML,
+       precisamos ajustar esse gap no celular para não ficar muito largo */
+    .cart-item-row .d-flex.gap-4 {
+        gap: 10px !important; /* Reduz o espaço entre qtd e lixeira */
+        margin-left: auto; /* Empurra para a direita se houver quebra */
+    }
+    
+    /* Botões de quantidade maiores para toque */
     .quantity-control {
-        margin-top: 10px;
+        height: 40px;
+    }
+    
+    .quantity-control button {
+        padding: 0 12px !important; /* Área de toque maior */
+    }
+}
+
+/* --- NOTEBOOK / TABLET (Entre 992px e 1200px) --- */
+@media (min-width: 992px) {
+    /* Faz o resumo acompanhar a rolagem da tela */
+    .col-lg-4 {
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+    }
+}
+
+/* --- DESKTOP GRANDE (Monitores 24" / Acima de 1400px) --- */
+@media (min-width: 1400px) {
+    /* Limita a largura máxima do conteúdo para não esticar demais */
+    .cart-page.container {
+        max-width: 1200px;
+    }
+
+    /* Aumenta um pouco a fonte e imagens para telas grandes */
+    .cart-img-wrapper {
+        width: 90px;
+        height: 90px;
+    }
+
+    .card-body h5 {
+        font-size: 1.15rem;
+    }
+
+    .btn-dark {
+        font-size: 1.1rem;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
     }
 }

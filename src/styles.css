@@ -21,3 +21,22 @@ body {
 * { box-sizing: border-box; }
 a { text-decoration: none; }
 ul { list-style: none; padding: 0; margin: 0; }
+
+/* Garante que o HTML e Body ocupem 100% da tela */
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+  
+  /* O Wrapper vira um container Flex de coluna */
+  .app-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Altura mínima de 100% da viewport */
+  }
+  
+  /* O conteúdo principal cresce para ocupar o vazio */
+  .main-content {
+    flex: 1; 
+    /* Isso empurra o footer para baixo, não importa o conteúdo */
+  }
