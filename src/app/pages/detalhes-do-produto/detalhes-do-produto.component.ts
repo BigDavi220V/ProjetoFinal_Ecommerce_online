@@ -259,36 +259,4 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
     this.selectedSize = size;
   }
 
-  adicionarbriga a seleção do tamanho
-    if (!this.selectedSize) {
-      alert('Por favor, selecione um tamanho antes de adicionar ao carrinho.');
-      return;
-    }
-    
-    // Validação de Estoque
-    if (this.pknho e quantidade)
-    console.log(`Adicionando ${this.quantity}x ${this.produanho: ${this.selectedSize}`);
-idealmente o carrinhoService deveria suportar quantidade no método adaCORREÇÃO: PolsaoiagarprvduzdiE.  osiznhnorelara atdrido de "Img"!"ggncuincr  TSm lece locve:S 'nmne r Ad la(já
-cho i   n tcn,ecima!
 }
-    
-    alert(`${this.quantity}x ${this.product.name} (Tamanho: selectedSize}) adicnho!`);
-  }
-
-  comprarAgora(): void {
-    if (!t foihis.selecteze) {
-      alert('Selecione um tamanho para continuar.');
-      return;
-    }
-    this.adicionarAoCarrinho();
-    // Exemplo: Redirecionar para o carrinho ou checkout
-    // this.router.navigate(['/carrinho']);
-  }
-
-  voltar(): void {
-    this.location.back();
-  }
-
-  formatPrice(price: number): string {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
-  }
