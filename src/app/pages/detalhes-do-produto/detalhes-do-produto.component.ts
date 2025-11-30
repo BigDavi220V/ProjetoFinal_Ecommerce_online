@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router'; 
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 import { CarrinhoService } from '../../services/carrinho.service';
@@ -16,7 +16,7 @@ interface CarouselItem {
 @Component({
   selector: 'app-detalhes-do-produto',
   standalone: true,
-  imports: [CommonModule], // Importante: CommonModule necessário para diretivas básicas
+  imports: [CommonModule, RouterLink], 
   templateUrl: './detalhes-do-produto.component.html',
   styleUrl: './detalhes-do-produto.component.css'
 })
@@ -37,6 +37,9 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
   
   // Estado do tamanho selecionado pelo usuário
   selectedSize: string | null = null;
+
+  // Estado da quantidade selecionada pelo usuário (usando Signal)
+  quantity = signal(1);
 
   // Variáveis do Carrossel
   carouselItems: CarouselItem[] = [];
@@ -190,21 +193,15 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
     this.stopAutoSlide();
     this.autoSlideInterval = setInterval(() => {
       if (!this.isPaused) {
-        // Se estiver tocando vídeo, não avança automaticamente até acabar (ou mantemos o timer?)
-        // Requisito 3: "Pausar os vídeos quando não estiverem visíveis".
-        // Se o item atual é vídeo e não está pausado, o carrossel deve respeitar o tempo ou o vídeo?
-        // Vamos manter o timer simples por enquanto, mas resetar se for vídeo longo pode ser complexo.
-        // Simplificação: o timer roda, mas se for vídeo, ele vai cortar. 
-        // Melhoria: pausar o slide se for vídeo e deixar o vídeo dar play.
         
-        if (this.currentItem.type === 'video' && !this.videoPlayer?.nativeElement.paused) {
+        if (this.currentItem.type === 'video' && this.videoPlayer?.nativeElement.paused === false) {
            // Se o vídeo está tocando, não avança o slide automaticamente
            return;
         }
         
         this.nextImage();
       }
-    }, 4000); // Aumentei para 4s conforme pedido original (estava 2s no último read)
+    }, 4000); 
   }
 
   private stopAutoSlide(): void {
@@ -254,9 +251,55 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
 
   // --- Fim Lógica do Carrossel ---
 
+  // Métodos para controle de quantidade
+  incrementQuantity(): void {
+    this.quantity.update(q => q + 1);
+  }
+
+  decrementQuantity(): void {
+    this.quantity.update(q => Math.max(1, q - 1)); // Garante que a quantidade mínima é 1
+  }
+
   // Método para selecionar um tamanho ao clicar
   selectSize(size: string): void {
     this.selectedSize = size;
   }
 
+  adicionarAoCarrinho(): void {
+    if (!this.product) {
+      alert('Erro: Produto não encontrado.');
+      return;
+    }
+
+    // Validação obrigatória da seleção do tamanho
+    if (!this.selectedSize) {
+      alert('Por favor, selecione um tamanho antes de adicionar ao carrinho.');
+      return;
+    }
+    
+    // Adiciona o produto ao carrinho com a quantidade e tamanho selecionados
+    for (let i = 0; i < this.quantity(); i++) {
+        this.carrinhoService.adicionar(this.product, this.selectedSize);
+    }
+
+    alert(`${this.quantity()}x ${this.product.name} (Tamanho: ${this.selectedSize}) adicionado(s) ao carrinho!`);
+  }
+
+  comprarAgora(): void {
+    if (!this.selectedSize) {
+      alert('Selecione um tamanho para continuar.');
+      return;
+    }
+    this.adicionarAoCarrinho();
+    // Exemplo: Redirecionar para o carrinho ou checkout
+    // this.router.navigate(['/carrinho']);
+  }
+
+  voltar(): void {
+    this.location.back();
+  }
+
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+  }
 }

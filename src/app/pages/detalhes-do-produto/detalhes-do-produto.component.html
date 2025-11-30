@@ -2,43 +2,70 @@
   @if (product) {
     <div class="row gx-5">
       <!-- ========================================== -->
-      <!-- COLUNA ESQUERDA: Carrossel de Imagens      -->
+      <!-- COLUNA ESQUERDA: Carrossel de Imagens/Vídeos -->
       <!-- ========================================== -->
       <div class="col-lg-7 mb-4 mb-lg-0">
         <div class="image-gallery sticky-top" style="top: 20px; z-index: 1;">
           
-          <!-- Imagem Principal (Destaque) -->
-          <div class="main-image-container mb-3 shadow-sm position-relative"
-               (mouseenter)="pauseAutoSlide()">
-            
-            <!-- Controles de Navegação -->
-            <button class="carousel-btn prev" (click)="manualPrev()" aria-label="Anterior">
-              <i class="bi bi-chevron-left"></i>
-            </button>
-            
-            <img [src]="currentImage" [alt]="product.name" class="img-fluid main-image fade-in-image">
-            
-            <button class="carousel-btn next" (click)="manualNext()" aria-label="Próximo">
-              <i class="bi bi-chevron-right"></i>
-            </button>
-          </div>
+          <!-- Imagem/Vídeo Principal (Destaque) -->
+          <div class="main-media-container mb-3 shadow-sm position-relative">
+            @if (currentItem.type === 'image') {
+              <img 
+                [src]="currentItem.url" 
+                [alt]="product.name" 
+                class="img-fluid main-image rounded"
+                (error)="handleImageError(currentImageIndex)"
+              >
+            } @else if (currentItem.type === 'video') {
+              <video 
+                #videoPlayer 
+                [src]="currentItem.url" 
+                class="img-fluid main-image rounded" 
+                controls 
+                autoplay 
+                muted 
+                loop
+              ></video>
+            }
 
-          <!-- Miniaturas (Thumbnails) -->
-          <div class="thumbnails-row d-flex gap-2 justify-content-center">
-            @for (img of images; track $index) {
-              <div class="thumbnail-item" 
-                   [class.active]="currentImageIndex === $index"
-                   (click)="setMainImage($index)">
-                <img [src]="img" 
-                     [alt]="product.name + ' visualização ' + ($index + 1)" 
-                     class="img-fluid"
-                     [style.filter]="$index === 0 ? 'none' : 
-                                    $index === 1 ? 'hue-rotate(45deg)' : 
-                                    $index === 2 ? 'hue-rotate(90deg)' : 'grayscale(100%)'">
-              </div>
+            <!-- Controles de Navegação do Carrossel -->
+            @if (carouselItems.length > 1) {
+              <button class="carousel-control-prev" type="button" (click)="manualPrev()">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+              </button>
+              <button class="carousel-control-next" type="button" (click)="manualNext()">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+              </button>
             }
           </div>
 
+          <!-- Miniaturas (Thumbnails) -->
+          @if (carouselItems.length > 1) {
+            <div class="thumbnails-row d-flex gap-2 justify-content-center" role="tablist">
+              @for (item of carouselItems; track $index) {
+                <div 
+                  class="thumbnail-item rounded"
+                  [class.active]="currentImageIndex === $index"
+                  (click)="setMainImage($index)"
+                  role="tab"
+                  [attr.aria-selected]="currentImageIndex === $index"
+                  [attr.aria-controls]="'media-tab-' + $index"
+                  tabindex="0"
+                >
+                  @if (item.type === 'image') {
+                    <img [src]="item.url" [alt]="'Miniatura ' + $index" class="img-fluid rounded">
+                  } @else {
+                    <div class="video-thumbnail-overlay">
+                      <i class="bi bi-play-circle-fill display-6 text-white"></i>
+                    </div>
+                    <img [src]="product.image" [alt]="'Miniatura de Vídeo ' + $index" class="img-fluid rounded video-placeholder">
+                  }
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
 
@@ -53,7 +80,7 @@
             <h1 class="product-title display-6 fw-bold mb-2">{{ product.name }}</h1>
             <div class="d-flex align-items-center gap-3">
               <h2 class="product-price text-dark fw-bold mb-0">{{ formatPrice(product.price) }}</h2>
-              <span class="badge bg-light text-dark border">Frete Grátis</span>
+              <span class="badge bg-success text-white">Frete Grátis</span>
             </div>
             <p class="text-muted mt-2 mb-0"><small>Em até 12x sem juros no cartão</small></p>
           </div>
@@ -61,21 +88,23 @@
           <!-- Descrição -->
           <div class="mb-4">
             <p class="product-description text-secondary">
-              Ideal para treinos de alta performance. Tecido respirável, costuras reforçadas e design que valoriza o corpo. 
-              Sinta o conforto e a liberdade de movimento.
+              {{ product.description || 'Ideal para treinos de alta performance. Tecido respirável, costuras reforçadas e design que valoriza o corpo. Sinta o conforto e a liberdade de movimento.' }}
             </p>
           </div>
 
           <!-- Seletor de Tamanhos -->
           <div class="mb-4">
             <h6 class="fw-bold mb-3 text-uppercase small ls-1">Escolha o Tamanho:</h6>
-            <div class="d-flex flex-wrap gap-2">
+            <div class="d-flex flex-wrap gap-2" role="group" aria-label="Seletor de Tamanhos">
               @for (size of sizes; track size) {
                 <button 
                   type="button"
-                  class="size-selector-btn btn"
+                  class="size-selector-btn btn btn-outline-dark"
                   [class.active]="selectedSize === size"
-                  (click)="selectSize(size)">
+                  (click)="selectSize(size)"
+                  [attr.aria-pressed]="selectedSize === size"
+                  [attr.aria-current]="selectedSize === size ? 'true' : 'false'"
+                >
                   {{ size }}
                 </button>
               }
@@ -87,12 +116,56 @@
             }
           </div>
 
+          <!-- Seletor de Quantidade -->
+          <div class="mb-4">
+            <h6 class="fw-bold mb-3 text-uppercase small ls-1">Quantidade:</h6>
+            <div class="input-group quantity-selector" style="width: 150px;">
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button" 
+                (click)="decrementQuantity()" 
+                [disabled]="quantity() <= 1"
+                aria-label="Diminuir quantidade"
+              >
+                <i class="bi bi-dash"></i>
+              </button>
+              <input 
+                type="text" 
+                class="form-control text-center" 
+                [value]="quantity()" 
+                readonly
+                aria-live="polite"
+                aria-label="Quantidade selecionada"
+              >
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button" 
+                (click)="incrementQuantity()"
+                aria-label="Aumentar quantidade"
+              >
+                <i class="bi bi-plus"></i>
+              </button>
+            </div>
+          </div>
+
           <!-- Botões de Ação -->
           <div class="action-buttons d-grid gap-3 mt-4">
-            <button class="btn btn-dark btn-lg py-3 text-uppercase fw-bold shadow-sm" (click)="adicionarAoCarrinho()">
+            <button 
+              class="btn btn-dark btn-lg py-3 text-uppercase fw-bold shadow-sm" 
+              (click)="adicionarAoCarrinho()"
+              [disabled]="!selectedSize"
+            >
               Adicionar ao Carrinho
             </button>
             
+            <button 
+              class="btn btn-success btn-lg py-3 text-uppercase fw-bold shadow-sm" 
+              (click)="comprarAgora()"
+              [disabled]="!selectedSize"
+            >
+              Comprar Agora
+            </button>
+
             <button class="btn btn-outline-secondary py-2 fw-semibold" (click)="voltar()">
               Continuar Comprando
             </button>
