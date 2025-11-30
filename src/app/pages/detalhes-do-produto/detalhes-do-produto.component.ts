@@ -16,7 +16,7 @@ interface CarouselItem {
 @Component({
   selector: 'app-detalhes-do-produto',
   standalone: true,
-  imports: [CommonModule, RouterLink], 
+  imports: [CommonModule], 
   templateUrl: './detalhes-do-produto.component.html',
   styleUrl: './detalhes-do-produto.component.css'
 })
@@ -201,7 +201,7 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
         
         this.nextImage();
       }
-    }, 4000); 
+    }, 3000); 
   }
 
   private stopAutoSlide(): void {
@@ -219,7 +219,7 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
     // Retoma após 8 segundos de inatividade
     this.resumeSlideTimeout = setTimeout(() => {
       this.isPaused = false;
-    }, 8000);
+    }, 5000);
   }
 
   handleImageError(index: number): void {

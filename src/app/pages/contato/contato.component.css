@@ -16,7 +16,7 @@
     align-items: center;
     min-height: 100vh;
     background-color: var(--primary-alpha);
-    padding: 20px;
+    padding: 150px;
     font-family: 'Poppins', sans-serif;
 }
 
@@ -177,9 +177,15 @@
 
 .social-icons {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
 }
+
+.social_icons_contato{
+font-size: 3rem;
+}
+
+
 
 .social-btn {
     width: 40px;
