@@ -14,6 +14,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid #f0f0f0;
+  position: relative; /* Para os botões do carrossel */
 }
 
 .main-image {
@@ -23,9 +24,8 @@
   transition: transform 0.4s ease;
 }
 
-.main-image:hover {
-  transform: scale(1.03); /* Zoom suave */
-}
+/* Removendo o hover de zoom antigo para evitar conflito com controles ou adicionar se desejado */
+/* .main-image:hover { transform: scale(1.03); } */
 
 /* Miniaturas */
 .thumbnail-item {
@@ -118,6 +118,54 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- Estilos do Carrossel --- */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+  transition: all 0.2s ease;
+  opacity: 0; /* Esconde por padrão */
+}
+
+.main-image-container:hover .carousel-btn {
+  opacity: 1; /* Mostra no hover */
+}
+
+.carousel-btn:hover {
+  background-color: #000;
+  color: #fff;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.prev {
+  left: 15px;
+}
+
+.carousel-btn.next {
+  right: 15px;
+}
+
+/* Animação de transição da imagem */
+.fade-in-image {
+  animation: imageFade 0.4s ease-in-out;
+}
+
+@keyframes imageFade {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
 /* Responsividade */
 @media (max-width: 991px) {
   .product-info-col {
@@ -125,5 +173,9 @@
   }
   .main-image {
     max-height: 400px;
+  }
+  /* Em mobile, sempre mostrar os botões */
+  .carousel-btn {
+    opacity: 1;
   }
 }

@@ -35,8 +35,8 @@ export class AppComponent implements OnInit {
     this.router.events.pipe(
       // Filtra apenas quando a navegação termina (para ter certeza da URL final)
       filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      this.checkLayout(event.url);
+    ).subscribe((event: NavigationEnd) => {
+      this.checkLayout(event.urlAfterRedirects || event.url);
     });
   }
 
@@ -49,9 +49,15 @@ export class AppComponent implements OnInit {
     // Lista de rotas onde o Header/Footer NÃO devem aparecer
     const hiddenRoutes = ['/login', '/cadastro', '/forgot-password'];
 
+    // Se for a raiz, esconde o layout para evitar flash antes do redirecionamento
+    if (url === '/' || url === '') {
+      this.showLayout.set(false);
+      return;
+    }
+
     // Verifica se a URL atual começa com alguma das rotas proibidas
     // Usamos 'includes' para pegar casos como '/login?returnUrl=...'
-    const isHidden = hiddenRoutes.some(route => url.includes(route));
+    const isHidden = hiddenRoutes.some(route => url.toLowerCase().includes(route));
 
     // Se for uma rota escondida, showLayout vira false. Caso contrário, true.
     this.showLayout.set(!isHidden);

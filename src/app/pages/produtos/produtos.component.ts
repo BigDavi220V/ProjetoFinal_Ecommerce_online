@@ -21,5 +21,6 @@ export class ProductsComponent {
     { id: 7, name: 'LEG PRETO', price: 100.00, image: 'assets/assets IA/Modelo_Preto01.png' },
     { id: 8, name: 'LEG TURQUESA', price: 100.00, image: 'assets/assets IA/Modelo_Azul_Turquesa01.png' },
     { id: 9, name: 'LEG MARINHO', price: 100.00, image: 'assets/assets IA/Modelo_Azul_Escuro01.png' },
+    { id: 10, name: 'LEG BLACK', price: 100.00, image: 'assets/10_card/Modelo_01.png' },
   ];
 }
