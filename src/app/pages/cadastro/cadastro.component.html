@@ -46,6 +46,20 @@
                 </div>
 
                 <div class="input-group">
+                    <label for="telefone">Telefone</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="tel" 
+                            id="telefone" 
+                            formControlName="telefone" 
+                            placeholder="(XX) 9XXXX-XXXX"
+                            [class.error-border]="f.telefone.invalid && f.telefone.touched"
+                        >
+                        <i class="fas fa-phone icon"></i>
+                    </div>
+                </div>
+
+                <div class="input-group">
                     <label for="senha">Senha</label>
                     <div class="input-wrapper">
                         <input 

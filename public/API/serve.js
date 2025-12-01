@@ -5,6 +5,26 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const cors = require("cors"); // Permite requisições de outros domínios
 const db = require("./db"); // Módulo de conexão com o banco de dados
+const multer = require("multer");
+const fs = require("fs");
+
+// Configuração do Multer para Upload de Imagens
+const uploadDir = path.join(__dirname, "../assets/uploads");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 const app = express();
 const PORT = process.env.PORT || 2009;
@@ -28,34 +48,34 @@ app.use(express.static(path.join(__dirname, "public")));
 // ROTA DE CADASTRO (REGISTRO)
 // =================================================================
 app.post("/cadastrar", async (req, res) => {
-    const { nome, email, senha } = req.body;
+    const { nome, email, senha, telefone } = req.body;
 
     if (!nome || !email || !senha) {
-        return res.status(400).send("Todos os campos são obrigatórios.");
+        return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos." });
     }
 
     try {
         // 1. Gerar o hash da senha
         const senha_hash = await bcrypt.hash(senha, saltRounds);
 
-        // 2. Inserir o novo usuário na tabela 'usuarios' (do schema Izzi_Fitness_v2)
+        // 2. Inserir o novo usuário na tabela 'usuarios'
         const sql =
-            "INSERT INTO usuarios (nome_completo, email, senha_hash) VALUES (?, ?, ?)";
+            "INSERT INTO usuarios (nome_completo, email, senha_hash, telefone) VALUES (?, ?, ?, ?)";
 
-        await db.query(sql, [nome, email, senha_hash]);
+        await db.query(sql, [nome, email, senha_hash, telefone || null]);
 
         // 3. Resposta de sucesso
-        res.status(201).send("Usuário cadastrado com sucesso!");
+        res.status(201).json({ message: "Usuário cadastrado com sucesso!" });
 
     } catch (error) {
         console.error("Erro ao cadastrar usuário:", error.message);
 
         // Erro de duplicidade (ex: email já cadastrado)
         if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(409).send("Este e-mail já está cadastrado.");
+            return res.status(409).json({ error: "Este e-mail já está cadastrado." });
         }
 
-        res.status(500).send("Erro interno ao salvar no banco de dados.");
+        res.status(500).json({ error: "Erro interno ao salvar no banco de dados." });
     }
 });
 
@@ -66,7 +86,7 @@ app.post("/login", async (req, res) => {
     const { email, senha } = req.body;
 
     if (!email || !senha) {
-        return res.status(400).send("E-mail e senha são obrigatórios.");
+        return res.status(400).json({ error: "E-mail e senha são obrigatórios." });
     }
 
     try {
@@ -76,7 +96,7 @@ app.post("/login", async (req, res) => {
 
         if (results.length === 0) {
             // Usuário não encontrado
-            return res.status(401).send("E-mail ou senha inválidos.");
+            return res.status(401).json({ error: "E-mail ou senha inválidos." });
         }
 
         const usuario = results[0];
@@ -88,15 +108,16 @@ app.post("/login", async (req, res) => {
             // Login bem-sucedido
             // Em um projeto real, você criaria uma sessão ou um token JWT aqui.
             console.log(`Usuário ${usuario.id} logado com sucesso.`);
-            return res.redirect("/home.html"); // Redireciona para a página inicial
+            // return res.redirect("/home.html"); // Comentado para uso via API
+            return res.status(200).json({ message: "Login realizado com sucesso", userId: usuario.id });
         } else {
             // Senha incorreta
-            return res.status(401).send("E-mail ou senha inválidos.");
+            return res.status(401).json({ error: "E-mail ou senha inválidos." });
         }
 
     } catch (error) {
         console.error("Erro ao fazer login:", error.message);
-        res.status(500).send("Erro interno ao fazer login.");
+        res.status(500).json({ error: "Erro interno ao fazer login." });
     }
 });
 
@@ -330,6 +351,126 @@ app.post("/checkout", async (req, res) => {
         res.status(500).send(error.message || "Erro ao processar pedido.");
     } finally {
         connection.release();
+    }
+});
+
+// =================================================================
+// MÓDULO ADMINISTRATIVO (ADM)
+// =================================================================
+
+// Inicializar tabelas extras para o Admin (Galeria)
+async function initAdminDB() {
+    try {
+        const sqlGaleria = `
+            CREATE TABLE IF NOT EXISTS galeria_produtos (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                produto_id INT NOT NULL,
+                imagem_url VARCHAR(255) NOT NULL,
+                FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
+            )
+        `;
+        await db.query(sqlGaleria);
+        console.log("Tabela 'galeria_produtos' verificada/criada.");
+    } catch (error) {
+        console.error("Erro ao inicializar banco admin:", error);
+    }
+}
+initAdminDB();
+
+// Dashboard Stats
+app.get("/admin/stats", async (req, res) => {
+    try {
+        const [users] = await db.query("SELECT COUNT(*) as total FROM usuarios");
+        const [orders] = await db.query("SELECT COUNT(*) as total FROM pedidos");
+        const [lowStock] = await db.query("SELECT COUNT(*) as total FROM produtos WHERE estoque < 10"); // Exemplo de estoque baixo
+        const [revenue] = await db.query("SELECT SUM(valor_total) as total FROM pedidos WHERE status_pedido != 'cancelado'");
+
+        res.json({
+            total_usuarios: users[0].total,
+            total_pedidos: orders[0].total,
+            produtos_estoque_baixo: lowStock[0].total,
+            receita_total: revenue[0].total || 0
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar estatísticas." });
+    }
+});
+
+// Gerenciar Usuários
+app.get("/admin/usuarios", async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT id, nome_completo, email, data_cadastro FROM usuarios ORDER BY data_cadastro DESC");
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao listar usuários." });
+    }
+});
+
+// Gerenciar Pedidos
+app.get("/admin/pedidos", async (req, res) => {
+    try {
+        const sql = `
+            SELECT p.id, p.data_pedido, p.status_pedido, p.valor_total, u.nome_completo as cliente
+            FROM pedidos p
+            JOIN usuarios u ON p.usuario_id = u.id
+            ORDER BY p.data_pedido DESC
+        `;
+        const [rows] = await db.query(sql);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao listar pedidos." });
+    }
+});
+
+app.put("/admin/pedidos/:id/status", async (req, res) => {
+    const { status } = req.body;
+    try {
+        await db.query("UPDATE pedidos SET status_pedido = ? WHERE id = ?", [status, req.params.id]);
+        res.json({ message: "Status do pedido atualizado." });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao atualizar pedido." });
+    }
+});
+
+// Cadastro de Produto com Upload (Sobrescrevendo/Complementando a rota existente se necessário, ou criando nova rota admin)
+// Nota: A rota POST /produtos existente não tem upload. Vamos criar uma específica para admin com upload.
+app.post("/admin/produtos", upload.single('imagem'), async (req, res) => {
+    const { nome, descricao, preco, estoque, categoria_id } = req.body;
+    const imagem_url = req.file ? `/assets/uploads/${req.file.filename}` : null;
+
+    if (!nome || !preco || !estoque) {
+        return res.status(400).json({ error: "Campos obrigatórios faltando." });
+    }
+
+    try {
+        const sql = "INSERT INTO produtos (nome, descricao, preco, estoque, categoria_id, imagem_url) VALUES (?, ?, ?, ?, ?, ?)";
+        const [result] = await db.query(sql, [nome, descricao, preco, estoque, categoria_id, imagem_url]);
+        
+        res.status(201).json({ id: result.insertId, message: "Produto criado com sucesso!", imagem_url });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao criar produto." });
+    }
+});
+
+// Upload de Galeria (Múltiplas Imagens)
+app.post("/admin/produtos/:id/galeria", upload.array('imagens', 5), async (req, res) => {
+    const produtoId = req.params.id;
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+        return res.status(400).json({ error: "Nenhuma imagem enviada." });
+    }
+
+    try {
+        const values = files.map(file => [produtoId, `/assets/uploads/${file.filename}`]);
+        const sql = "INSERT INTO galeria_produtos (produto_id, imagem_url) VALUES ?";
+        
+        await db.query(sql, [values]);
+        res.status(201).json({ message: `${files.length} imagens adicionadas à galeria.` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao salvar galeria." });
     }
 });
 

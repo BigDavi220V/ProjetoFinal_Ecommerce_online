@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('./serve');
 const db = require('./db');
+const bcrypt = require('bcrypt');
 
 // Mock do módulo db
 jest.mock('./db', () => ({
@@ -8,9 +9,44 @@ jest.mock('./db', () => ({
     getConnection: jest.fn()
 }));
 
+// Mock do bcrypt
+jest.mock('bcrypt', () => ({
+    hash: jest.fn().mockResolvedValue('hashed_password'),
+    compare: jest.fn()
+}));
+
 describe('API Endpoints', () => {
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    // Teste de Login
+    describe('POST /login', () => {
+        it('deve realizar login com sucesso e retornar JSON', async () => {
+            const mockUser = { id: 1, senha_hash: 'hash' };
+            db.query.mockResolvedValue([[mockUser]]);
+            bcrypt.compare.mockResolvedValue(true);
+
+            const res = await request(app)
+                .post('/login')
+                .send({ email: 'teste@teste.com', senha: '123' });
+
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveProperty('message', 'Login realizado com sucesso');
+            expect(res.body).toHaveProperty('userId', 1);
+        });
+
+        it('deve falhar com credenciais inválidas', async () => {
+            const mockUser = { id: 1, senha_hash: 'hash' };
+            db.query.mockResolvedValue([[mockUser]]);
+            bcrypt.compare.mockResolvedValue(false); // Senha errada
+
+            const res = await request(app)
+                .post('/login')
+                .send({ email: 'teste@teste.com', senha: 'errada' });
+
+            expect(res.statusCode).toEqual(401);
+        });
     });
 
     // Teste de Recuperação de Senha
@@ -61,29 +97,48 @@ describe('API Endpoints', () => {
     describe('GET /produtos', () => {
         it('deve retornar lista de produtos', async () => {
             const mockProducts = [{ id: 1, nome: 'Produto 1' }];
-            db.query.mockResolvedValue([[mockProducts]]);
+            db.query.mockResolvedValue([mockProducts]); // Ajuste para compatibilidade com destructuring
 
             const res = await request(app).get('/produtos');
 
             expect(res.statusCode).toEqual(200);
-            // expect(res.body).toEqual(mockProducts); // wait, mockResolvedValue returns [rows, fields] structure usually but db.query in mysql2/promise returns [rows, fields]
-            // In my mock I returned [[...]] which simulates [rows] destructuring?
-            // Wait, in serve.js: const [rows] = await db.query(...)
-            // So db.query should return an array where the first element is the rows.
-            // My mockResolvedValue([[mockProducts]]) means await db.query() returns [[mockProducts]]
-            // const [rows] = [[mockProducts]] -> rows = [mockProducts] -> wrong.
-            // const [rows] = [[mockProducts]] -> rows = [mockProducts] -> Wait.
-            // If I return [[{...}]], then [rows] = [[{...}]] -> rows = [{...}]. Correct.
-            // But res.json(rows) sends [{...}].
-            // So res.body should be array of objects.
-            // Wait, in my test: expect(res.body).toEqual(mockProducts);
-            // If rows is [{id:1}], res.body is [{id:1}].
-            // mockProducts is [{id:1}].
-            // However, notice the structure: mockResolvedValue([ [mockUser] ])
-            // db.query returns [rows, fields].
-            // So await db.query() returns [rows, fields].
-            // const [rows] = await ...
-            // So my mock is correct.
+        });
+    });
+
+    // Teste de Cadastro
+    describe('POST /cadastrar', () => {
+        it('deve cadastrar usuário com sucesso incluindo telefone', async () => {
+            db.query.mockResolvedValue([{ insertId: 1 }]);
+            
+            const newUser = {
+                nome: 'Novo Usuario',
+                email: 'novo@teste.com',
+                senha: '123',
+                telefone: '(11) 99999-9999'
+            };
+
+            const res = await request(app)
+                .post('/cadastrar')
+                .send(newUser);
+
+            expect(res.statusCode).toEqual(201);
+            expect(res.body).toHaveProperty('message', 'Usuário cadastrado com sucesso!');
+            
+            // Verificar se o db.query foi chamado com os argumentos corretos
+            // A query é a segunda chamada no código (a primeira é o hash do bcrypt que não usa db, mas o db.query é chamado uma vez)
+            // Esperamos que o mock do db.query tenha sido chamado com os parametros
+            expect(db.query).toHaveBeenCalledWith(
+                expect.stringContaining('INSERT INTO usuarios'),
+                expect.arrayContaining(['Novo Usuario', 'novo@teste.com', 'hashed_password', '(11) 99999-9999'])
+            );
+        });
+
+        it('deve falhar se campos obrigatórios estiverem faltando', async () => {
+            const res = await request(app)
+                .post('/cadastrar')
+                .send({ nome: 'Sem Email' });
+
+            expect(res.statusCode).toEqual(400);
         });
     });
 });

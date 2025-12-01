@@ -1,0 +1,94 @@
+<div class="admin-page">
+  <header class="page-header">
+    <h1>Gerenciar Produtos</h1>
+    <div class="actions">
+        <button (click)="toggleForm()" class="btn-primary">
+            {{ showForm() ? 'Cancelar' : '+ Novo Produto' }}
+        </button>
+        <a routerLink="/admin/dashboard" class="btn-secondary">Voltar</a>
+    </div>
+  </header>
+
+  <!-- Form Section -->
+  <section class="form-section" *ngIf="showForm()">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="admin-form">
+      <div class="form-group">
+        <label>Nome do Produto</label>
+        <input type="text" formControlName="nome" placeholder="Ex: Legging Preta">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preço (R$)</label>
+          <input type="number" formControlName="preco" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Estoque</label>
+          <input type="number" formControlName="estoque">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Categoria</label>
+        <select formControlName="categoria_id">
+            <option [value]="1">Leggings</option>
+            <option [value]="2">Tops</option>
+            <option [value]="3">Conjuntos</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea formControlName="descricao" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Imagem Principal</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*">
+      </div>
+
+      <div class="form-group">
+        <label>Galeria (Múltiplas)</label>
+        <input type="file" (change)="onGallerySelected($event)" accept="image/*" multiple>
+      </div>
+
+      <button type="submit" [disabled]="productForm.invalid" class="btn-submit">Salvar Produto</button>
+    </form>
+  </section>
+
+  <!-- List Section -->
+  <section class="list-section">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Imagem</th>
+          <th>Nome</th>
+          <th>Preço</th>
+          <th>Estoque</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products()">
+          <td>{{ p.id }}</td>
+          <td>
+             <img [src]="p.imagem_url || 'assets/placeholder.png'" alt="img" class="thumb">
+          </td>
+          <td>{{ p.nome }}</td>
+          <td>{{ p.preco | currency:'BRL' }}</td>
+          <td>
+            <span [class.low-stock]="p.estoque < 10" class="stock-badge">{{ p.estoque }}</span>
+          </td>
+          <td>
+            <button class="btn-sm edit">Editar</button>
+            <!-- <button class="btn-sm delete">Excluir</button> -->
+          </td>
+        </tr>
+        <tr *ngIf="products().length === 0">
+            <td colspan="6" class="text-center">Nenhum produto cadastrado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

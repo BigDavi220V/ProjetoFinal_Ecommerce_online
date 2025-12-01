@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ export class LoginComponent {
   // Injeção de dependências moderna
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private userService = inject(UserService);
 
   // Estado reativo com Signals
   isLoading = signal(false);
@@ -38,17 +40,28 @@ export class LoginComponent {
     }
 
     this.isLoading.set(true);
+    const { email, password } = this.loginForm.value;
 
-    // Simulação de Backend
-    setTimeout(() => {
-      console.log('Login realizado:', this.loginForm.value);
-      this.isLoading.set(false);
-      
-      // Redirecionamento após login (ajuste a rota conforme seu app)
-       this.router.navigate(['/home']);
-      alert('Login efetuado com sucesso!');
-    }, 2000);
+    this.userService.login({ email, senha: password }).subscribe({
+      next: (response: any) => { // Tipar como any pois retorna JSON agora
+        this.isLoading.set(false);
+        console.log('Login realizado:', response);
+        
+        // Persistência simples de sessão
+        if (response.userId) {
+          localStorage.setItem('user_id', response.userId);
+          localStorage.setItem('user_email', email!);
+        }
+
+        alert('Login efetuado com sucesso!');
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        console.error('Erro no login:', error);
+        const msg = error.error?.error || 'Falha no login. Verifique suas credenciais.';
+        alert(msg);
+      }
+    });
   }
-
-  
 }

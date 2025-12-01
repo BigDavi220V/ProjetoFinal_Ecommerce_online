@@ -1,0 +1,48 @@
+<div class="admin-container">
+  <header class="admin-header">
+    <h1>Painel Administrativo</h1>
+    <a routerLink="/home" class="btn-home">Voltar ao Site</a>
+  </header>
+
+  <div class="admin-content">
+    <!-- Stats Cards -->
+    <section class="stats-section" *ngIf="stats()">
+      <div class="card">
+        <h3>Usuários</h3>
+        <p class="number">{{ stats().total_usuarios }}</p>
+      </div>
+      <div class="card">
+        <h3>Pedidos</h3>
+        <p class="number">{{ stats().total_pedidos }}</p>
+      </div>
+      <div class="card">
+        <h3>Receita</h3>
+        <p class="number">{{ stats().receita_total | currency:'BRL' }}</p>
+      </div>
+      <div class="card" [class.alert]="stats().produtos_estoque_baixo > 0">
+        <h3>Estoque Baixo</h3>
+        <p class="number">{{ stats().produtos_estoque_baixo }}</p>
+        <small *ngIf="stats().produtos_estoque_baixo > 0" style="color: #e74c3c;">Atenção necessária!</small>
+      </div>
+    </section>
+
+    <!-- Navigation Grid -->
+    <section class="nav-grid">
+      <a routerLink="/admin/produtos" class="nav-card">
+        <i class="icon">📦</i>
+        <h3>Gerenciar Produtos</h3>
+        <p>Adicionar, editar e gerenciar estoque</p>
+      </a>
+      <a routerLink="/admin/usuarios" class="nav-card">
+        <i class="icon">👥</i>
+        <h3>Gerenciar Usuários</h3>
+        <p>Visualizar clientes cadastrados</p>
+      </a>
+      <a routerLink="/admin/pedidos" class="nav-card">
+        <i class="icon">🛒</i>
+        <h3>Gerenciar Pedidos</h3>
+        <p>Acompanhar e atualizar status de vendas</p>
+      </a>
+    </section>
+  </div>
+</div>

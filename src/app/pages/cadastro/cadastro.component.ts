@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 // Validador personalizado para comparar senhas
 const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -22,12 +23,14 @@ const passwordMatchValidator: ValidatorFn = (control: AbstractControl): Validati
 export class CadastroComponent {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private userService = inject(UserService);
 
   isLoading = signal(false);
 
   signupForm = this.fb.group({
     nome: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
+    telefone: [''], // Campo opcional
     senha: ['', [Validators.required, Validators.minLength(8)]],
     confirmarSenha: ['', Validators.required]
   }, { validators: passwordMatchValidator }); // Validador aplicado ao grupo todo
@@ -42,13 +45,20 @@ export class CadastroComponent {
     }
 
     this.isLoading.set(true);
-    console.log('Dados enviados:', this.signupForm.value);
+    const { nome, email, senha, telefone } = this.signupForm.value;
 
-    // Simulação de envio ao Backend
-    setTimeout(() => {
-      this.isLoading.set(false);
-      alert('Conta criada com sucesso!');
-      this.router.navigate(['/login']);
-    }, 2000);
+    this.userService.cadastrar({ nome, email, senha, telefone }).subscribe({
+      next: (response: any) => {
+        this.isLoading.set(false);
+        alert(response.message || 'Conta criada com sucesso! Faça login.');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        console.error('Erro ao cadastrar:', error);
+        const msg = error.error?.error || 'Erro ao realizar cadastro. Tente novamente.';
+        alert(msg);
+      }
+    });
   }
 }

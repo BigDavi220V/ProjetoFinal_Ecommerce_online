@@ -1,0 +1,50 @@
+<div class="admin-page">
+  <header class="page-header">
+    <h1>Gerenciar Pedidos</h1>
+    <div class="actions">
+        <button (click)="exportToCSV()" class="btn-primary">Exportar CSV</button>
+        <button (click)="printReport()" class="btn-secondary">Imprimir / PDF</button>
+        <a routerLink="/admin/dashboard" class="btn-secondary">Voltar</a>
+    </div>
+  </header>
+
+  <section class="list-section">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Data</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders()">
+          <td>{{ order.id }}</td>
+          <td>{{ order.cliente }}</td>
+          <td>{{ order.data_pedido | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ order.valor_total | currency:'BRL' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="order.status_pedido">
+                {{ order.status_pedido | uppercase }}
+            </span>
+          </td>
+          <td>
+            <select (change)="updateStatus(order, $any($event.target).value)" [value]="order.status_pedido">
+                <option value="pendente">Pendente</option>
+                <option value="aprovado">Aprovado</option>
+                <option value="enviado">Enviado</option>
+                <option value="entregue">Entregue</option>
+                <option value="cancelado">Cancelado</option>
+            </select>
+          </td>
+        </tr>
+        <tr *ngIf="orders().length === 0">
+            <td colspan="6" class="text-center">Nenhum pedido encontrado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

@@ -102,3 +102,6 @@ CREATE TABLE itens_carrinho (
     FOREIGN KEY (produto_id) REFERENCES produtos(id),
     UNIQUE KEY uk_carrinho_produto (carrinho_id, produto_id)
 );
+
+select * from usuarios;
+
