@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef, signal, effect } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router'; 
+import { ActivatedRoute, RouterLink, Router } from '@angular/router'; 
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 import { CarrinhoService } from '../../services/carrinho.service';
@@ -26,6 +26,7 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
   private location = inject(Location);
   private productService = inject(ProductService);
   private carrinhoService = inject(CarrinhoService);
+  private router = inject(Router);
 
   // Referência ao elemento de vídeo atual (se houver)
   @ViewChild('videoPlayer') videoPlayer?: ElementRef<HTMLVideoElement>;
@@ -96,16 +97,39 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
     ]
   };
 
-  ngOnInit(): void {
-    // Pega o ID da rota e busca o produto correspondente
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (id) {
-      this.product = this.productService.getProductById(id);
-      if (this.product) {
-        // Inicializa o array de imagens/videos
-        this.loadProductMedia(id);
-        this.startAutoSlide();
+  constructor() {
+    // Reage a mudanças na lista de produtos (ex: carregamento tardio)
+    effect(() => {
+      const products = this.productService.products();
+      const idParam = this.route.snapshot.paramMap.get('id');
+      
+      if (idParam && products.length > 0 && !this.product) {
+         const id = !isNaN(Number(idParam)) ? Number(idParam) : idParam;
+         this.loadProductData(id);
       }
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        const id = !isNaN(Number(idParam)) ? Number(idParam) : idParam;
+        this.loadProductData(id);
+        
+        // Se a lista estiver vazia, força o carregamento
+        if (this.productService.products().length === 0) {
+           this.productService.loadProducts();
+        }
+      }
+    });
+  }
+
+  private loadProductData(id: number | string) {
+    this.product = this.productService.getProductById(id);
+    if (this.product) {
+      this.loadProductMedia(id);
+      this.startAutoSlide();
     }
   }
 
@@ -113,14 +137,24 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
    * Identifica se a URL é de um vídeo baseado na extensão
    */
   private isVideo(url: string): boolean {
+    if (!url) return false;
+    // Se for base64, assume imagem por enquanto
+    if (url.startsWith('data:')) return false;
+    
     const videoExtensions = ['.mp4', '.webm', '.ogg'];
     return videoExtensions.some(ext => url.toLowerCase().endsWith(ext));
   }
 
-  private loadProductMedia(id: number): void {
+  private loadProductMedia(id: number | string): void {
     if (!this.product) return;
 
-    const extraMedia = this.productExtraImages[id];
+    let extraMedia: string[] | undefined;
+    
+    // Só busca mídia extra se for ID numérico (produtos hardcoded)
+    if (typeof id === 'number') {
+      extraMedia = this.productExtraImages[id];
+    }
+
     let rawMediaList: string[] = [];
 
     if (extraMedia && extraMedia.length > 0) {
@@ -153,12 +187,10 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
     return this.carouselItems[this.currentImageIndex];
   }
   
-  // Getter para compatibilidade com código antigo que espera apenas URL
   get currentImage(): string {
-    return this.currentItem.url;
+    return this.currentItem?.url || '';
   }
   
-  // Getter para compatibilidade com código antigo (length)
   get images(): string[] {
     return this.carouselItems.map(i => i.url);
   }
@@ -170,11 +202,13 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
   }
 
   nextImage(): void {
+    if (this.carouselItems.length <= 1) return;
     this.currentImageIndex = (this.currentImageIndex + 1) % this.carouselItems.length;
     this.checkVideoAutoPlay();
   }
 
   prevImage(): void {
+    if (this.carouselItems.length <= 1) return;
     this.currentImageIndex = (this.currentImageIndex - 1 + this.carouselItems.length) % this.carouselItems.length;
     this.checkVideoAutoPlay();
   }
@@ -191,17 +225,18 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
 
   private startAutoSlide(): void {
     this.stopAutoSlide();
+    if (this.carouselItems.length <= 1) return;
+
     this.autoSlideInterval = setInterval(() => {
       if (!this.isPaused) {
         
         if (this.currentItem.type === 'video' && this.videoPlayer?.nativeElement.paused === false) {
-           // Se o vídeo está tocando, não avança o slide automaticamente
            return;
         }
         
         this.nextImage();
       }
-    }, 3000); 
+    }, 5000);
   }
 
   private stopAutoSlide(): void {
@@ -210,96 +245,63 @@ export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
     }
   }
 
-  pauseAutoSlide(): void {
+  private pauseAutoSlide(): void {
     this.isPaused = true;
+    this.stopAutoSlide();
+    
     if (this.resumeSlideTimeout) {
       clearTimeout(this.resumeSlideTimeout);
     }
     
-    // Retoma após 8 segundos de inatividade
     this.resumeSlideTimeout = setTimeout(() => {
       this.isPaused = false;
-    }, 5000);
+      this.startAutoSlide();
+    }, 10000);
   }
 
-  handleImageError(index: number): void {
-    if (this.carouselItems[index]) {
-      // Define uma imagem de fallback e força o tipo para imagem
-      this.carouselItems[index] = {
-        url: 'assets/Logo_IZ_sem_nome.jpeg',
-        type: 'image'
-      };
-    }
-  }
-
-  /**
-   * Verifica se o item atual é vídeo e tenta reproduzir
-   */
   private checkVideoAutoPlay(): void {
-    // Pequeno delay para garantir que o DOM atualizou
     setTimeout(() => {
       if (this.currentItem.type === 'video' && this.videoPlayer) {
-        this.videoPlayer.nativeElement.currentTime = 0;
-        this.videoPlayer.nativeElement.play().catch(err => {
-          console.warn('Autoplay bloqueado pelo navegador:', err);
-          this.videoPlayer!.nativeElement.muted = true; // Tenta mutar para permitir autoplay
-          this.videoPlayer!.nativeElement.play().catch(e => console.error('Falha ao reproduzir vídeo:', e));
-        });
+        this.videoPlayer.nativeElement.play().catch(e => console.log('Autoplay bloqueado:', e));
       }
     }, 100);
   }
 
-  // --- Fim Lógica do Carrossel ---
+  // --- Métodos de Interação ---
 
-  // Métodos para controle de quantidade
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+  }
+
+  selectSize(size: string): void {
+    this.selectedSize = size;
+  }
+
   incrementQuantity(): void {
     this.quantity.update(q => q + 1);
   }
 
   decrementQuantity(): void {
-    this.quantity.update(q => Math.max(1, q - 1)); // Garante que a quantidade mínima é 1
-  }
-
-  // Método para selecionar um tamanho ao clicar
-  selectSize(size: string): void {
-    this.selectedSize = size;
+    this.quantity.update(q => q > 1 ? q - 1 : 1);
   }
 
   adicionarAoCarrinho(): void {
-    if (!this.product) {
-      alert('Erro: Produto não encontrado.');
-      return;
+    if (this.product && this.selectedSize) {
+      this.carrinhoService.adicionar(this.product, this.selectedSize, this.quantity());
+      alert('Produto adicionado ao carrinho!');
     }
-
-    // Validação obrigatória da seleção do tamanho
-    if (!this.selectedSize) {
-      alert('Por favor, selecione um tamanho antes de adicionar ao carrinho.');
-      return;
-    }
-    
-    // Adiciona o produto ao carrinho com a quantidade e tamanho selecionados
-    for (let i = 0; i < this.quantity(); i++) {
-        this.carrinhoService.adicionar(this.product, this.selectedSize);
-    }
-
-    alert(`${this.quantity()}x ${this.product.name} (Tamanho: ${this.selectedSize}) adicionado(s) ao carrinho!`);
   }
 
   comprarAgora(): void {
-    if (!this.selectedSize) {
-      alert('Selecione um tamanho para continuar.');
-      return;
+    if (this.product && this.selectedSize) {
+      this.carrinhoService.adicionar(this.product, this.selectedSize, this.quantity());
+      // Aqui poderia navegar para o carrinho, ex:
+      // this.router.navigate(['/carrinho']);
+      alert('Redirecionando para checkout...');
     }
-    this.adicionarAoCarrinho();
-    // Exemplo: Redirecionar para o carrinho ou checkout
-    // this.router.navigate(['/carrinho']);
   }
 
   voltar(): void {
     this.location.back();
-  }
-
-  formatPrice(price: number): string {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   }
 }

@@ -28,36 +28,36 @@ export class CarrinhoService {
    * Adiciona um produto ao carrinho.
    * Se o produto com o mesmo ID e TAMANHO já existir, aumenta a quantidade.
    */
-  adicionar(produto: Product, tamanho: string) {
+  adicionar(produto: Product, tamanho: string, quantidade: number = 1) {
     this.items.update(itensAtuais => {
       const index = itensAtuais.findIndex(
         item => item.product.id === produto.id && item.size === tamanho
       );
 
       if (index !== -1) {
-        // Item já existe, clonamos o array e atualizamos a quantidade do item específico
+        // Item já existe, clonamos o array e atualizamos a quantidade
         const novosItens = [...itensAtuais];
         novosItens[index] = { 
           ...novosItens[index], 
-          quantity: novosItens[index].quantity + 1 
+          quantity: novosItens[index].quantity + quantidade 
         };
         return novosItens;
       } else {
         // Item novo
-        return [...itensAtuais, { product: produto, quantity: 1, size: tamanho }];
+        return [...itensAtuais, { product: produto, quantity: quantidade, size: tamanho }];
       }
     });
   }
 
   // Remove um item completamente
-  removerItem(produtoId: number, tamanho: string) {
+  removerItem(produtoId: number | string, tamanho: string) {
     this.items.update(itens => 
       itens.filter(item => !(item.product.id === produtoId && item.size === tamanho))
     );
   }
 
   // Incrementa a quantidade
-  incrementarQuantidade(produtoId: number, tamanho: string) {
+  incrementarQuantidade(produtoId: number | string, tamanho: string) {
     this.items.update(itens => 
       itens.map(item => 
         (item.product.id === produtoId && item.size === tamanho)
@@ -68,7 +68,7 @@ export class CarrinhoService {
   }
 
   // Decrementa a quantidade (se for 1, remove o item)
-  decrementarQuantidade(produtoId: number, tamanho: string) {
+  decrementarQuantidade(produtoId: number | string, tamanho: string) {
     this.items.update(itens => {
       return itens.map(item => {
         if (item.product.id === produtoId && item.size === tamanho) {

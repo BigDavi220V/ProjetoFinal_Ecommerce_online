@@ -1,94 +1,158 @@
-<div class="admin-page">
-  <header class="page-header">
-    <h1>Gerenciar Produtos</h1>
-    <div class="actions">
-        <button (click)="toggleForm()" class="btn-primary">
-            {{ showForm() ? 'Cancelar' : '+ Novo Produto' }}
-        </button>
-        <a routerLink="/admin/dashboard" class="btn-secondary">Voltar</a>
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gerenciar Produtos</h2>
+    <div class="d-flex gap-2">
+      <button routerLink="/admin/dashboard" class="btn btn-outline-secondary">Retornar para o menu</button>
+      <button class="btn btn-primary" (click)="toggleForm()">
+        <i class="fas" [class.fa-plus]="!showForm()" [class.fa-minus]="showForm()"></i>
+        {{ showForm() ? 'Cancelar' : 'Novo Produto' }}
+      </button>
     </div>
-  </header>
+  </div>
 
-  <!-- Form Section -->
-  <section class="form-section" *ngIf="showForm()">
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="admin-form">
-      <div class="form-group">
-        <label>Nome do Produto</label>
-        <input type="text" formControlName="nome" placeholder="Ex: Legging Preta">
+  @if (showForm()) {
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Cadastrar Produto</h5>
       </div>
+      <div class="card-body">
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nome do Produto <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="nome" 
+                     [class.is-invalid]="productForm.get('nome')?.invalid && productForm.get('nome')?.touched">
+              @if (productForm.get('nome')?.hasError('required') && productForm.get('nome')?.touched) {
+                <div class="invalid-feedback">Nome é obrigatório.</div>
+              }
+              @if (productForm.get('nome')?.hasError('minlength') && productForm.get('nome')?.touched) {
+                <div class="invalid-feedback">Nome deve ter pelo menos 3 caracteres.</div>
+              }
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Categoria <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="categoria_id"
+                      [class.is-invalid]="productForm.get('categoria_id')?.invalid && productForm.get('categoria_id')?.touched">
+                <option [value]="1">Roupas</option>
+                <option [value]="2">Acessórios</option>
+                <option [value]="3">Equipamentos</option>
+                <option [value]="4">Suplementos</option>
+              </select>
+              @if (productForm.get('categoria_id')?.invalid && productForm.get('categoria_id')?.touched) {
+                <div class="invalid-feedback">Selecione uma categoria.</div>
+              }
+            </div>
+          </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Preço (R$)</label>
-          <input type="number" formControlName="preco" step="0.01">
-        </div>
-        <div class="form-group">
-          <label>Estoque</label>
-          <input type="number" formControlName="estoque">
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Descrição <span class="text-danger">*</span></label>
+            <textarea class="form-control" rows="3" formControlName="descricao"
+                      [class.is-invalid]="productForm.get('descricao')?.invalid && productForm.get('descricao')?.touched"></textarea>
+            @if (productForm.get('descricao')?.invalid && productForm.get('descricao')?.touched) {
+              <div class="invalid-feedback">Descrição é obrigatória.</div>
+            }
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Preço (R$) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" formControlName="preco" step="0.01"
+                     [class.is-invalid]="productForm.get('preco')?.invalid && productForm.get('preco')?.touched">
+              @if (productForm.get('preco')?.invalid && productForm.get('preco')?.touched) {
+                <div class="invalid-feedback">Preço inválido.</div>
+              }
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Estoque <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" formControlName="estoque"
+                     [class.is-invalid]="productForm.get('estoque')?.invalid && productForm.get('estoque')?.touched">
+              @if (productForm.get('estoque')?.invalid && productForm.get('estoque')?.touched) {
+                <div class="invalid-feedback">Estoque inválido.</div>
+              }
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Imagem Principal</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Código SKU</label>
+              <input type="text" class="form-control" formControlName="sku" placeholder="Ex: CAM-001">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Tags</label>
+              <input type="text" class="form-control" formControlName="tags" placeholder="Separadas por vírgula">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Especificações Técnicas</label>
+              <input type="text" class="form-control" formControlName="especificacoes" placeholder="Breve resumo">
+            </div>
+          </div>
+
+          <div class="mb-3">
+             <label class="form-label">Galeria de Imagens (Opcional)</label>
+             <input type="file" class="form-control" (change)="onGallerySelected($event)" multiple accept="image/*">
+             <small class="text-muted">Selecione múltiplas imagens para a galeria do produto.</small>
+          </div>
+
+          <button type="submit" class="btn btn-success" [disabled]="productForm.invalid">
+            Salvar Produto
+          </button>
+        </form>
       </div>
+    </div>
+  }
 
-      <div class="form-group">
-        <label>Categoria</label>
-        <select formControlName="categoria_id">
-            <option [value]="1">Leggings</option>
-            <option [value]="2">Tops</option>
-            <option [value]="3">Conjuntos</option>
-        </select>
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Imagem</th>
+              <th>Nome</th>
+              <th>Preço</th>
+              <th>Estoque</th>
+              <th class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of products(); track product.id) {
+              <tr>
+                <td>#{{ product.id }}</td>
+                <td>
+                  @if (product.imagem_url) {
+                    <img [src]="product.imagem_url" alt="" style="width: 40px; height: 40px; object-fit: cover;" class="rounded">
+                  } @else {
+                    <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 40px; height: 40px;">
+                      <i class="fas fa-image"></i>
+                    </div>
+                  }
+                </td>
+                <td class="fw-bold">{{ product.nome }}</td>
+                <td>{{ product.preco | currency:'BRL' }}</td>
+                <td>
+                  <span class="badge" [class.bg-success]="product.estoque > 10" [class.bg-warning]="product.estoque <= 10 && product.estoque > 0" [class.bg-danger]="product.estoque === 0">
+                    {{ product.estoque }} un.
+                  </span>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product.id)" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center py-4 text-muted">Nenhum produto cadastrado.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-
-      <div class="form-group">
-        <label>Descrição</label>
-        <textarea formControlName="descricao" rows="3"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Imagem Principal</label>
-        <input type="file" (change)="onFileSelected($event)" accept="image/*">
-      </div>
-
-      <div class="form-group">
-        <label>Galeria (Múltiplas)</label>
-        <input type="file" (change)="onGallerySelected($event)" accept="image/*" multiple>
-      </div>
-
-      <button type="submit" [disabled]="productForm.invalid" class="btn-submit">Salvar Produto</button>
-    </form>
-  </section>
-
-  <!-- List Section -->
-  <section class="list-section">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Imagem</th>
-          <th>Nome</th>
-          <th>Preço</th>
-          <th>Estoque</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of products()">
-          <td>{{ p.id }}</td>
-          <td>
-             <img [src]="p.imagem_url || 'assets/placeholder.png'" alt="img" class="thumb">
-          </td>
-          <td>{{ p.nome }}</td>
-          <td>{{ p.preco | currency:'BRL' }}</td>
-          <td>
-            <span [class.low-stock]="p.estoque < 10" class="stock-badge">{{ p.estoque }}</span>
-          </td>
-          <td>
-            <button class="btn-sm edit">Editar</button>
-            <!-- <button class="btn-sm delete">Excluir</button> -->
-          </td>
-        </tr>
-        <tr *ngIf="products().length === 0">
-            <td colspan="6" class="text-center">Nenhum produto cadastrado.</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+    </div>
+  </div>
 </div>

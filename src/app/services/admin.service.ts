@@ -37,4 +37,8 @@ export class AdminService {
   getAllProducts(): Observable<any[]> {
     return this.http.get<any[]>('http://localhost:2009/produtos');
   }
+
+  deleteProduct(productId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/produtos/${productId}`);
+  }
 }

@@ -1,0 +1,73 @@
+.checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-tabs .nav-link {
+    color: #495057;
+    cursor: pointer;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: bold;
+    color: #000;
+    border-bottom: 3px solid #e62886; /* Usando a cor rosa do site */
+}
+
+.payment-content {
+    min-height: 200px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #eee;
+}
+
+.timeline {
+    margin-top: 20px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #ddd;
+    z-index: 0;
+}
+
+.timeline > div {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-primary {
+    background-color: #e62886;
+    border-color: #e62886;
+}
+
+.btn-primary:hover {
+    background-color: #c91c70;
+    border-color: #c91c70;
+}
+
+.btn-outline-primary {
+    color: #e62886;
+    border-color: #e62886;
+}
+
+.btn-outline-primary:hover {
+    background-color: #e62886;
+    color: white;
+}
+
+.text-primary {
+    color: #e62886 !important;
+}

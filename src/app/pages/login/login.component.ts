@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -10,10 +10,11 @@ import { UserService } from '../../services/user.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   // Injeção de dependências moderna
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private userService = inject(UserService);
 
   // Estado reativo com Signals
@@ -51,16 +52,48 @@ export class LoginComponent {
         if (response.userId) {
           localStorage.setItem('user_id', response.userId);
           localStorage.setItem('user_email', email!);
+          
+          if (response.isAdmin) {
+            localStorage.setItem('is_admin', 'true');
+          } else {
+            localStorage.removeItem('is_admin');
+          }
         }
 
         alert('Login efetuado com sucesso!');
-        this.router.navigate(['/home']);
+        
+        if (response.isAdmin) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/home']);
+        }
       },
       error: (error) => {
         this.isLoading.set(false);
         console.error('Erro no login:', error);
         const msg = error.error?.error || 'Falha no login. Verifique suas credenciais.';
         alert(msg);
+      }
+    });
+  }
+
+  // Redireciona para o provedor Google (API externa)
+  loginWithGoogle() {
+    window.location.href = 'http://localhost:3000/auth/google';
+  }
+
+  // Processa retorno do Google via query params e autentica no app
+  ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      const googleId = params.get('google_id');
+      const googleEmail = params.get('google_email');
+      const googleName = params.get('name');
+      if (googleId && googleEmail) {
+        localStorage.setItem('google_id', googleId);
+        localStorage.setItem('user_email', googleEmail);
+        if (googleName) localStorage.setItem('user_name', googleName);
+        alert('Login com Google realizado!');
+        this.router.navigate(['/home']);
       }
     });
   }

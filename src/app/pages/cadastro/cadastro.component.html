@@ -92,6 +92,16 @@
                     }
                 </div>
 
+                <div class="input-group checkbox-group">
+                    <input type="checkbox" id="lgpd" formControlName="lgpd">
+                    <label for="lgpd">
+                        Li e concordo com a <a href="/politica-privacidade" target="_blank">Política de Privacidade</a>, LGPD e <a href="/termos-uso" target="_blank">Termos de Uso</a>.
+                    </label>
+                </div>
+                @if (f.lgpd.invalid && f.lgpd.touched) {
+                    <small class="error-msg">Você deve aceitar os termos para continuar.</small>
+                }
+
                 <button type="submit" class="btn-cadastro" [disabled]="signupForm.invalid || isLoading()">
                     @if (isLoading()) {
                         <span class="loader"></span> Cadastrando...

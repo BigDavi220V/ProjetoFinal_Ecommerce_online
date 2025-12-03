@@ -21,9 +21,25 @@ export class UserService {
     return this.http.post(`${this.apiUrl}/login`, credenciais); // O padrão é JSON, que é o que a API retorna agora
   }
 
-  // Método legado (mantido por compatibilidade se necessário, mas idealmente deve ser removido ou atualizado)
+  // Busca dados do usuário logado, por ID ou email
   getUser() {
-    // Pode ser implementado para buscar dados do perfil do usuário logado
-    return this.http.get(`${this.apiUrl}/clientes/1`); // Exemplo estático, idealmente passaria o ID do usuário logado
+    const id = typeof window !== 'undefined' ? localStorage.getItem('user_id') : null;
+    const email = typeof window !== 'undefined' ? localStorage.getItem('user_email') : null;
+    if (id) {
+      return this.http.get(`${this.apiUrl}/clientes/${id}`);
+    }
+    if (email) {
+      return this.http.get(`${this.apiUrl}/clientes`, { params: { email } });
+    }
+    return this.http.get(`${this.apiUrl}/clientes/1`);
+  }
+
+  updateUser(id: number | string, dados: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/clientes/${id}`, dados);
+  }
+
+  // Finalizar Pedido (Checkout)
+  checkout(payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/checkout`, payload);
   }
 }

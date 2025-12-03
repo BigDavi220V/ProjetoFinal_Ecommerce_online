@@ -44,6 +44,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/carrinho/carrinho.component').then(m => m.CarrinhoComponent)
     },
     {
+        path: 'checkout',
+        title: 'Finalizar Compra | IZZI FITNESS',
+        loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent)
+    },
+    {
         path: 'contato',
         title: 'Contato | IZZI FITNESS',
         loadComponent: () => import('./pages/contato/contato.component').then(m => m.ContactComponent)
