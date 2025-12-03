@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Product } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  // Lista centralizada de produtos (movida do seu componente anterior)
-  private products: Product[] = [
+  // Lista estática de produtos
+  private staticProducts: Product[] = [
     { id: 1, name: 'LEG ROXO', price: 100.00, image: 'assets/Modelo_01.png' },
     { id: 2, name: 'LEG VERDE ÁGUA', price: 100.00, image: 'assets/Modelo_02.png' },
     { id: 3, name: 'LEG AZUL ESCURO', price: 100.00, image: 'assets/Modelo_03.png' },
@@ -33,13 +33,42 @@ export class ProductService {
     },
   ];
 
-  // Retorna todos os produtos
-  getProducts(): Product[] {
-    return this.products;
+  // Signal público que contém a lista completa de produtos (estáticos + locais)
+  products = signal<Product[]>([]);
+
+  constructor() {
+    this.loadProducts();
   }
 
-  // Busca um produto específico pelo ID
-  getProductById(id: number): Product | undefined {
-    return this.products.find(p => p.id === id);
+  // Carrega produtos estáticos e mescla com os locais do localStorage
+  loadProducts() {
+    // Verifica se estamos no browser antes de acessar localStorage
+    let localProducts: Product[] = [];
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('local_products');
+      localProducts = stored ? JSON.parse(stored) : [];
+    }
+    
+    // Normaliza produtos estáticos para garantir compatibilidade de campos (Português/Inglês)
+    const staticWithCompat = this.staticProducts.map(p => ({
+        ...p,
+        nome: p.name,
+        preco: p.price,
+        imagem_url: p.image,
+        estoque: p.stock || 100 // Estoque padrão para itens estáticos
+    }));
+
+    this.products.set([...staticWithCompat, ...localProducts]);
+  }
+
+  // Retorna o valor atual do signal
+  getProducts(): Product[] {
+    return this.products();
+  }
+
+  // Busca um produto específico pelo ID (suporta number e string)
+  getProductById(id: number | string): Product | undefined {
+    // Usa == para permitir comparação entre string '1' e number 1
+    return this.products().find(p => p.id == id);
   }
 }

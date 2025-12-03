@@ -22,15 +22,15 @@ export class CarrinhoComponent {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   }
 
-  increaseQty(id: number, size: string) {
+  increaseQty(id: number | string, size: string) {
     this.carrinhoService.incrementarQuantidade(id, size);
   }
 
-  decreaseQty(id: number, size: string) {
+  decreaseQty(id: number | string, size: string) {
     this.carrinhoService.decrementarQuantidade(id, size);
   }
 
-  removeItem(id: number, size: string) {
+  removeItem(id: number | string, size: string) {
     this.carrinhoService.removerItem(id, size);
   }
 }

@@ -21,6 +21,9 @@ interface CarouselItem {
   styleUrl: './detalhes-do-produto.component.css'
 })
 export class DetalhesDoProdutoComponent implements OnInit, OnDestroy {
+handleImageError(arg0: number) {
+throw new Error('Method not implemented.');
+}
 
   private route = inject(ActivatedRoute);
   private location = inject(Location);

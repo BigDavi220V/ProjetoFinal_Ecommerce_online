@@ -135,8 +135,8 @@
                 <td class="fw-bold">{{ product.nome }}</td>
                 <td>{{ product.preco | currency:'BRL' }}</td>
                 <td>
-                  <span class="badge" [class.bg-success]="product.estoque > 10" [class.bg-warning]="product.estoque <= 10 && product.estoque > 0" [class.bg-danger]="product.estoque === 0">
-                    {{ product.estoque }} un.
+                  <span class="badge" [class.bg-success]="(product.estoque ?? 0) > 10" [class.bg-warning]="(product.estoque ?? 0) <= 10 && (product.estoque ?? 0) > 0" [class.bg-danger]="(product.estoque ?? 0) === 0">
+                    {{ product.estoque ?? 0 }} un.
                   </span>
                 </td>
                 <td class="text-end">
