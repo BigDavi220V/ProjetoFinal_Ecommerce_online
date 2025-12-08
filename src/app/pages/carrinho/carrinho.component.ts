@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CarrinhoService } from '../../services/carrinho.service';
 
 @Component({
@@ -11,6 +11,7 @@ import { CarrinhoService } from '../../services/carrinho.service';
   styleUrls: ['./carrinho.component.css']
 })
 export class CarrinhoComponent {
+  private router = inject(Router);
   // Injetando o serviço (público para ser acessado no HTML)
   carrinhoService = inject(CarrinhoService);
   
@@ -20,6 +21,13 @@ export class CarrinhoComponent {
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+  }
+
+  finalizarCompra(): void {
+    // Lógica para finalizar a compra, como redirecionar para a página de pagamento
+    alert('Hora de Comprar! | Página de Pagamento');
+    //Mundança do caminho para finalizar a compra
+    this.router.navigate(['/checkout']);
   }
 
   increaseQty(id: number | string, size: string) {

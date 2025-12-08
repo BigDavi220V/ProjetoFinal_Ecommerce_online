@@ -1,35 +1,88 @@
+.checkout-page {
+    background-color: #f8f9fa; /* var(--bs-light) fallback */
+    min-height: 100vh;
+}
+
 .checkout-container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 15px;
 }
 
-.nav-tabs .nav-link {
+/* Navigation Styles */
+.nav-pills .nav-link {
     color: #495057;
     cursor: pointer;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
 }
 
-.nav-tabs .nav-link.active {
-    font-weight: bold;
-    color: #000;
-    border-bottom: 3px solid #e62886; /* Usando a cor rosa do site */
+.nav-pills .nav-link:hover {
+    border-color: #e62886;
+    color: #e62886;
 }
 
+.nav-pills .nav-link.active {
+    background-color: #e62886;
+    color: #fff;
+    border-color: #e62886;
+}
+
+.nav-pills .nav-link i {
+    font-size: 1.1rem;
+}
+
+/* Payment Content */
 .payment-content {
     min-height: 200px;
 }
 
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards */
 .card {
     border: none;
     border-radius: 10px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
-.list-group-item {
-    border: none;
-    border-bottom: 1px solid #eee;
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
+/* Cart Summary */
+.cart-summary {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #dee2e6 #fff;
+}
+
+.cart-summary::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-summary::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+.cart-summary::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 3px;
+}
+
+/* Timeline */
 .timeline {
     margin-top: 20px;
+    position: relative;
 }
 
 .timeline::before {
@@ -39,7 +92,7 @@
     left: 10%;
     right: 10%;
     height: 2px;
-    background: #ddd;
+    background: #e9ecef;
     z-index: 0;
 }
 
@@ -48,14 +101,16 @@
     z-index: 1;
 }
 
+/* Buttons & Colors */
 .btn-primary {
     background-color: #e62886;
     border-color: #e62886;
+    transition: all 0.3s;
 }
 
-.btn-primary:hover {
-    background-color: #c91c70;
-    border-color: #c91c70;
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #c91c70 !important;
+    border-color: #c91c70 !important;
 }
 
 .btn-outline-primary {
@@ -63,11 +118,43 @@
     border-color: #e62886;
 }
 
-.btn-outline-primary:hover {
+.btn-outline-primary:hover, .btn-outline-primary.active {
     background-color: #e62886;
     color: white;
+    border-color: #e62886;
 }
 
 .text-primary {
     color: #e62886 !important;
+}
+
+/* Form Styles */
+.form-control:focus, .form-select:focus {
+    border-color: #e62886;
+    box-shadow: 0 0 0 0.25rem rgba(230, 40, 134, 0.25);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .checkout-container {
+        padding: 0 1rem;
+    }
+
+    .nav-pills {
+        flex-direction: column;
+    }
+    
+    .nav-pills .nav-item {
+        width: 100%;
+    }
+    
+    .nav-pills .nav-link {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
 }

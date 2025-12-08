@@ -137,6 +137,10 @@ export class CheckoutComponent implements OnInit {
   }
 
   finalizeOrder() {
+    if (this.simulationStep() === 'processing') {
+      return;
+    }
+
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
       alert('Por favor, preencha todos os dados de entrega.');
@@ -208,6 +212,8 @@ export class CheckoutComponent implements OnInit {
         lastDigits: cardNum.slice(-4)
       });
     }
+
+   
 
     // Persistir no Backend
     const usuarioId = typeof window !== 'undefined' ? localStorage.getItem('user_id') : null;

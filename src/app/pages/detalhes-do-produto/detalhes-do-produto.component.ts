@@ -299,8 +299,8 @@ throw new Error('Method not implemented.');
     if (this.product && this.selectedSize) {
       this.carrinhoService.adicionar(this.product, this.selectedSize, this.quantity());
       // Aqui poderia navegar para o carrinho, ex:
-      // this.router.navigate(['/carrinho']);
       alert('Redirecionando para checkout...');
+      this.router.navigate(['/carrinho']);
     }
   }
 

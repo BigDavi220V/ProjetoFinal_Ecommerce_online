@@ -28,7 +28,7 @@ async function populate() {
               image: 'assets/10_card/Modelo_01.png',
               description: 'A Legging Black Basic é a peça essencial que não pode faltar no seu guarda-roupa fitness.'
             },
-            { name: 'LEG VERDE', price: 100.00, image: 'assets/11_card/Modelo_01.png' },	
+            	
         ];
 
         for (const p of products) {
