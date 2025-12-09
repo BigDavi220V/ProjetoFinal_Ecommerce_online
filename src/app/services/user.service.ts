@@ -38,6 +38,16 @@ export class UserService {
     return this.http.put(`${this.apiUrl}/clientes/${id}`, dados);
   }
 
+  // Verifica se o usuário está autenticado
+  isAuthenticated(): boolean {
+    if (typeof window !== 'undefined' && localStorage) {
+      const userId = localStorage.getItem('user_id');
+      const legacyLogado = localStorage.getItem('usuarioLogado');
+      return !!(userId || legacyLogado);
+    }
+    return false;
+  }
+
   // Finalizar Pedido (Checkout)
   checkout(payload: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/checkout`, payload);

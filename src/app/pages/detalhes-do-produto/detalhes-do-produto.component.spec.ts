@@ -95,7 +95,7 @@ describe('DetalhesDoProdutoComponent', () => {
   });
 
   it('should pause auto slide on interaction', fakeAsync(() => {
-    component.pauseAutoSlide();
+    (component as any).pauseAutoSlide();
     expect(component.isPaused).toBeTrue();
     
     // Avança 8 segundos

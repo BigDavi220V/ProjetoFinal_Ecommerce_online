@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { DetalhesDoProdutoComponent } from './pages/detalhes-do-produto/detalhes-do-produto.component';
 import { adminGuard } from './guards/admin.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -11,26 +12,31 @@ export const routes: Routes = [
     {
         path: 'login',
         title: 'Login | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
     },
     {
         path: 'cadastro',
         title: 'Cadastro | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/cadastro/cadastro.component').then(m => m.CadastroComponent)
     },
     {
         path: 'forgot-password',
         title: 'Redefinir senha | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/redefinir-password/redefinir-password.component').then(m => m.RedefinirPasswordComponent)
     },
     {
         path: 'home',
         title: 'Inicio | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
     },
     {
         path: 'produtos',
         title: 'Produtos | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/produtos/produtos.component').then(m => m.ProductsComponent)
     },
     { 
@@ -41,11 +47,13 @@ export const routes: Routes = [
     {
         path: 'carrinho',
         title: 'Carrinho | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/carrinho/carrinho.component').then(m => m.CarrinhoComponent)
     },
     {
         path: 'checkout',
         title: 'Finalizar Compra | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent)
     },
     {
@@ -56,6 +64,7 @@ export const routes: Routes = [
     {
         path: 'perfil',
         title: 'Perfil | IZZI FITNESS',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/perfil/perfil.component').then(m => m.PerfilComponent)
     },
 
