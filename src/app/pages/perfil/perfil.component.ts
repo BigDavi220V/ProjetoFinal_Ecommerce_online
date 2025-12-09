@@ -3,6 +3,7 @@ import { UserService } from '../../services/user.service';
 import { PurchaseHistoryService } from '../../services/purchase-history.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
@@ -24,8 +25,10 @@ export class PerfilComponent implements OnInit {
   profileForm: FormGroup;
   isEditing = signal(false);
   isLoading = signal(false);
+  isAdmin = signal(false);
 
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
   constructor(
     private userService: UserService, 
@@ -41,8 +44,38 @@ export class PerfilComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.checkAdminStatus();
     this.loadUserData();
     this.loadPurchaseHistory();
+  }
+
+  checkAdminStatus() {
+    if (typeof window !== 'undefined' && localStorage) {
+      const isAdm = localStorage.getItem('is_admin') === 'true';
+      this.isAdmin.set(isAdm);
+    }
+  }
+
+  goToAdminPanel() {
+    if (this.isAdmin()) {
+      // Audit log attempt
+      console.log(`[AUDIT] Admin access attempt by user at ${new Date().toISOString()}`);
+      
+      this.router.navigate(['/admin/dashboard']).then(success => {
+        if (success) {
+           console.log(`[AUDIT] Admin panel access successful`);
+        } else {
+          console.error('[AUDIT] Failed to navigate to admin panel');
+          alert('Não foi possível acessar o painel administrativo.');
+        }
+      }).catch(err => {
+        console.error('[AUDIT] Navigation error:', err);
+        alert('Erro ao tentar acessar o painel.');
+      });
+    } else {
+      console.warn(`[AUDIT] Unauthorized admin panel access attempt at ${new Date().toISOString()}`);
+      alert('Acesso negado: Você não tem permissões de administrador.');
+    }
   }
 
   loadUserData() {

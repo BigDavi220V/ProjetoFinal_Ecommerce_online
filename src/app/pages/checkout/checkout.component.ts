@@ -67,6 +67,10 @@ export class CheckoutComponent implements OnInit {
     this.loadUser();
   }
 
+  voltarParaLoja(): void {
+    this.router.navigate(['/produtos']);
+  }
+
   loadCart() {
     const items = this.carrinhoService.getItems()();
     if (items.length > 0) {
@@ -212,6 +216,28 @@ export class CheckoutComponent implements OnInit {
         lastDigits: cardNum.slice(-4)
       });
     }
+
+    // --- PERSISTÊNCIA LOCAL DO PEDIDO (SIMULAÇÃO) ---
+    const localOrder = {
+      id: 'LOC-' + Date.now(),
+      cliente: this.checkoutForm.get('nome')?.value || 'Cliente Visitante',
+      data_pedido: new Date().toISOString(),
+      valor_total: totalFinal,
+      status_pedido: status,
+      items: this.cartItems().map(item => ({
+        ...item.product,
+        quantidade: item.quantity,
+        tamanho: item.size
+      })),
+      detalhes_pagamento: this.simulationDetails()
+    };
+
+    if (typeof localStorage !== 'undefined') {
+      const currentOrders = JSON.parse(localStorage.getItem('local_orders') || '[]');
+      currentOrders.push(localOrder);
+      localStorage.setItem('local_orders', JSON.stringify(currentOrders));
+    }
+    // -------------------------------------------------
 
    
 

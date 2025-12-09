@@ -11,6 +11,13 @@
           </button>
         </div>
         <div class="card-body">
+          @if (isAdmin()) {
+            <div class="mb-3">
+              <button class="btn btn-admin w-100 fw-bold shadow-sm" (click)="goToAdminPanel()">
+                <i class="fas fa-user-shield me-2"></i> Acessar Painel ADM
+              </button>
+            </div>
+          }
           @if (!isEditing()) {
             <!-- Modo Visualização -->
             <div class="profile-view">

@@ -1,4 +1,5 @@
 export interface Product {
+  descrição?: string;
   id: number | string;
   name: string;
   price: number;
@@ -14,5 +15,6 @@ export interface Product {
   preco?: number;
   estoque?: number;
   imagem_url?: string;
+  images?: string[];
   isLocal?: boolean;
 }

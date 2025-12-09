@@ -21,6 +21,7 @@ export class AdminProductsComponent implements OnInit {
   products = this.productService.products;
   
   showForm = signal(false);
+  editingId: string | number | null = null;
   selectedFile: File | null = null;
   galleryFiles: FileList | null = null;
   
@@ -45,6 +46,25 @@ export class AdminProductsComponent implements OnInit {
 
   toggleForm() {
     this.showForm.update(v => !v);
+    if (!this.showForm()) {
+      this.resetForm();
+    }
+  }
+
+  editProduct(product: any) {
+    this.editingId = product.id;
+    this.productForm.patchValue({
+      nome: product.nome || product.name,
+      descricao: product.descricao || product.description,
+      preco: product.preco || product.price,
+      estoque: product.estoque || product.stock || 0,
+      categoria_id: product.categoria_id || 1,
+      sku: product.sku || '',
+      tags: product.tags || '',
+      especificacoes: typeof product.especificacoes === 'object' ? JSON.stringify(product.especificacoes) : (product.especificacoes || '')
+    });
+    this.showForm.set(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onFileSelected(event: any) {
@@ -68,35 +88,108 @@ export class AdminProductsComponent implements OnInit {
 
     try {
       const formValue = this.productForm.value;
-      let imagemUrl = '';
+      
+      // 1. Processar imagens (Principal e Galeria)
+      const imagemUrl = await this.processMainImage();
+      const galleryImages = await this.processGalleryImages();
 
-      // Se houver imagem selecionada, converte para Base64 para armazenamento local
-      if (this.selectedFile) {
-        imagemUrl = await this.toBase64(this.selectedFile);
-      }
-
-      const newProduct = {
+      // 2. Preparar objeto do produto
+      const productData = {
         ...formValue,
-        id: 'local-' + Date.now(), // ID único para produtos locais
         imagem_url: imagemUrl,
+        images: galleryImages,
         isLocal: true,
-        createdAt: new Date().toISOString()
+        updatedAt: new Date().toISOString()
       };
 
-      // Salva no localStorage (lógica de escrita mantida aqui por enquanto)
-      const currentLocalProducts = this.getLocalProducts();
-      currentLocalProducts.push(newProduct);
-      localStorage.setItem('local_products', JSON.stringify(currentLocalProducts));
+      // 3. Salvar (Criar ou Atualizar)
+      const success = this.saveProductData(productData);
 
-      alert('Produto cadastrado localmente com sucesso!');
-      this.resetForm();
-      
-      // Atualiza a lista global no serviço
-      this.productService.loadProducts();
+      if (success) {
+        this.resetForm();
+        this.productService.loadProducts();
+      }
 
     } catch (error) {
-      console.error('Erro ao salvar produto localmente:', error);
-      alert('Erro ao processar o produto.');
+      console.error('Erro ao salvar produto:', error);
+      alert('Erro ao processar o produto. Verifique se o arquivo não é muito grande.');
+    }
+  }
+
+  private async processMainImage(): Promise<string> {
+    if (this.selectedFile) {
+      return await this.toBase64(this.selectedFile);
+    } else if (this.editingId) {
+      const existing = this.products().find(p => p.id === this.editingId);
+      return existing?.imagem_url || existing?.image || '';
+    }
+    return '';
+  }
+
+  private async processGalleryImages(): Promise<string[]> {
+    if (this.galleryFiles && this.galleryFiles.length > 0) {
+      const promises = Array.from(this.galleryFiles).map(file => this.toBase64(file));
+      return await Promise.all(promises);
+    } else if (this.editingId) {
+      const existing = this.products().find(p => p.id === this.editingId);
+      return (existing as any).images || [];
+    }
+    return [];
+  }
+
+  private saveProductData(productData: any): boolean {
+    try {
+      const currentLocalProducts = this.getLocalProducts();
+
+      if (this.editingId) {
+        // --- EDIÇÃO ---
+        if (typeof this.editingId === 'string' && this.editingId.startsWith('local-')) {
+          const index = currentLocalProducts.findIndex(p => p.id === this.editingId);
+          if (index !== -1) {
+            currentLocalProducts[index] = { ...currentLocalProducts[index], ...productData };
+            this.saveToLocalStorage(currentLocalProducts);
+            alert('Produto atualizado com sucesso!');
+            return true;
+          }
+        } else {
+          // Edição de estático -> Novo local
+          const newId = 'local-' + Date.now();
+          currentLocalProducts.push({ ...productData, id: newId, originalId: this.editingId });
+          this.saveToLocalStorage(currentLocalProducts);
+          alert('Produto estático editado salvo como nova cópia local.');
+          return true;
+        }
+      } else {
+        // --- CRIAÇÃO ---
+        const newProduct = {
+          ...productData,
+          id: 'local-' + Date.now(),
+          createdAt: new Date().toISOString()
+        };
+        currentLocalProducts.push(newProduct);
+        this.saveToLocalStorage(currentLocalProducts);
+        alert('Produto cadastrado localmente com sucesso!');
+        return true;
+      }
+    } catch (e: any) {
+      console.error('Erro ao salvar no storage:', e);
+      // Lança um erro mais amigável se for cota excedida
+      if (e.message.includes('Armazenamento cheio')) {
+         throw e;
+      }
+      throw new Error('Falha ao salvar dados no armazenamento local.');
+    }
+    return false;
+  }
+
+  private saveToLocalStorage(products: any[]) {
+    try {
+      localStorage.setItem('local_products', JSON.stringify(products));
+    } catch (e: any) {
+      if (e.name === 'QuotaExceededError' || e.code === 22) {
+        throw new Error('Armazenamento cheio. Tente imagens menores.');
+      }
+      throw e;
     }
   }
 
@@ -124,6 +217,7 @@ export class AdminProductsComponent implements OnInit {
     this.productForm.reset({ categoria_id: 1, preco: 0, estoque: 0 });
     this.selectedFile = null;
     this.galleryFiles = null;
+    this.editingId = null;
     this.showForm.set(false);
   }
 
@@ -135,7 +229,7 @@ export class AdminProductsComponent implements OnInit {
       // Remover do localStorage
       const localProducts = this.getLocalProducts();
       const updatedProducts = localProducts.filter(p => p.id !== id);
-      localStorage.setItem('local_products', JSON.stringify(updatedProducts));
+      this.saveToLocalStorage(updatedProducts);
       
       alert('Produto local removido com sucesso!');
       this.productService.loadProducts(); // Atualiza serviço

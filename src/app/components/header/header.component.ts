@@ -60,12 +60,13 @@ import { Router, RouterLink } from '@angular/router';
       display: flex;
       gap: 5rem;
       align-items: center;
+      color: var(--white);
     }
 
     .menu_link {
       color: var(--text-white);
       font-size: 1.5rem;
-      font-weight: 350;
+      font-weight: 500;
       padding: 10px;
       transition: 0.3s;
     }
@@ -78,8 +79,9 @@ import { Router, RouterLink } from '@angular/router';
     }
 
     .icon_login {
-      font-size: 2.5rem;
-      color: #dd1569;
+      font-size: 3rem;
+      font-weight: 500;
+      color: var(--white);
       cursor: pointer;
     }
 

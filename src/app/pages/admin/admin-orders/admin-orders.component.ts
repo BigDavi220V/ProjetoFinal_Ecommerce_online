@@ -15,15 +15,50 @@ export class AdminOrdersComponent implements OnInit {
   private adminService = inject(AdminService);
   
   orders = signal<any[]>([]);
+  expandedOrderId = signal<string | number | null>(null);
 
   ngOnInit() {
     this.loadOrders();
   }
 
+  toggleDetails(orderId: string | number) {
+    if (this.expandedOrderId() === orderId) {
+      this.expandedOrderId.set(null);
+    } else {
+      this.expandedOrderId.set(orderId);
+    }
+  }
+
   loadOrders() {
+    // Carregar pedidos do backend
     this.adminService.getOrders().subscribe({
-      next: (data) => this.orders.set(data),
-      error: (err) => console.error(err)
+      next: (backendOrders) => {
+        // Carregar pedidos locais
+        let localOrders = [];
+        if (typeof localStorage !== 'undefined') {
+          const stored = localStorage.getItem('local_orders');
+          localOrders = stored ? JSON.parse(stored) : [];
+        }
+
+        // Combinar e ordenar por data (mais recente primeiro)
+        const allOrders = [...localOrders, ...backendOrders].sort((a, b) => {
+          return new Date(b.data_pedido).getTime() - new Date(a.data_pedido).getTime();
+        });
+
+        this.orders.set(allOrders);
+      },
+      error: (err) => {
+        console.error(err);
+        // Fallback: carregar apenas locais se backend falhar
+        if (typeof localStorage !== 'undefined') {
+          const stored = localStorage.getItem('local_orders');
+          if (stored) {
+             this.orders.set(JSON.parse(stored).sort((a: any, b: any) => 
+               new Date(b.data_pedido).getTime() - new Date(a.data_pedido).getTime()
+             ));
+          }
+        }
+      }
     });
   }
 

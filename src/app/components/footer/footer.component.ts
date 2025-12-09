@@ -6,9 +6,9 @@ import { Component } from '@angular/core';
   template: `
     <footer class="rodape">
       <div class="rodape_redes_sociais">
-        <i class="ph ph-instagram-logo"></i>
-        <i class="ph ph-facebook-logo"></i>
-        <i class="ph ph-whatsapp-logo"></i>
+       <a href="https://www.instagram.com/izzifitness.oficial/" target="_blank" style="color: var(--white);font-size: 2.5rem;"> <i class="ph ph-instagram-logo"></i> </a>
+        <a href="https://l.instagram.com/?u=http%3A%2F%2Fwa.me%2F5571996661646%3Futm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnqUptK4YJD8kj6PGaPcEDMg9jNhjDZEzB1AXzn2Ii_7nnqXZ6pSN-o6MDCwU_aem_p5GA8LKI2QYwwkkis5aQiw&e=AT002s9JlxbkvJaaicCNgqdMl5mUmX-2ol9vDDROz7kBzHdjGU8c7oTJjdX96MQ6D8ZliHcaT4AVw8C3BmAMVRfu3rSSc83wuPU6ElUoXg"
+         target="_blank" style="color: var(--white);font-size: 2.5rem;"> <i class="ph ph-whatsapp-logo"></i> </a>
       </div>
 
       <div id="copyright">
@@ -16,7 +16,7 @@ import { Component } from '@angular/core';
       </div>
 
       <div class="imagem_logo_rodape">
-        <img src="assets/Logo_IZ_sem_nome.jpeg" alt="Logo Rodapé" class="logo_rodape">
+        <img src="assets/Logo_IZ_com_nome.png" alt="Logo Rodapé" class="logo_rodape" style="width: 120px;">
       </div>
     </footer>
   `,
@@ -35,12 +35,12 @@ import { Component } from '@angular/core';
       display: flex;
       gap: 1rem;
       font-size: 2rem;
-      color: var(--text-white);
+      color: var(--white);
       cursor: pointer;
     }
 
     .copyright {
-      color: var(--text-white);
+      color: var(--white);
       font-weight: 700;
       margin: 0;
       text-align: center;

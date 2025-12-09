@@ -22,26 +22,66 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let order of orders()">
-          <td>{{ order.id }}</td>
-          <td>{{ order.cliente }}</td>
-          <td>{{ order.data_pedido | date:'dd/MM/yyyy HH:mm' }}</td>
-          <td>{{ order.valor_total | currency:'BRL' }}</td>
-          <td>
-            <span class="status-badge" [ngClass]="order.status_pedido">
-                {{ order.status_pedido | uppercase }}
-            </span>
-          </td>
-          <td>
-            <select (change)="updateStatus(order, $any($event.target).value)" [value]="order.status_pedido">
-                <option value="pendente">Pendente</option>
-                <option value="aprovado">Aprovado</option>
-                <option value="enviado">Enviado</option>
-                <option value="entregue">Entregue</option>
-                <option value="cancelado">Cancelado</option>
-            </select>
-          </td>
-        </tr>
+        <ng-container *ngFor="let order of orders()">
+          <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.cliente }}</td>
+            <td>{{ order.data_pedido | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ order.valor_total | currency:'BRL' }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="order.status_pedido">
+                  {{ order.status_pedido | uppercase }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-info me-2" (click)="toggleDetails(order.id)">
+                {{ expandedOrderId() === order.id ? 'Ocultar' : 'Detalhes' }}
+              </button>
+              <select (change)="updateStatus(order, $any($event.target).value)" [value]="order.status_pedido">
+                  <option value="pendente">Pendente</option>
+                  <option value="aprovado">Aprovado</option>
+                  <option value="enviado">Enviado</option>
+                  <option value="entregue">Entregue</option>
+                  <option value="cancelado">Cancelado</option>
+              </select>
+            </td>
+          </tr>
+          <!-- Linha de Detalhes -->
+          <tr *ngIf="expandedOrderId() === order.id" class="bg-light">
+            <td colspan="6">
+              <div class="p-3">
+                <h6 class="fw-bold">Itens do Pedido:</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered bg-white">
+                    <thead>
+                      <tr>
+                        <th>Imagem</th>
+                        <th>Produto</th>
+                        <th>Qtd</th>
+                        <th>Preço Unit.</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of order.items">
+                        <td style="width: 60px;">
+                          <img [src]="item.image || item.imagem_url" alt="" style="width: 40px; height: 40px; object-fit: cover;">
+                        </td>
+                        <td>{{ item.name || item.nome }} <small class="text-muted">({{ item.tamanho || item.size }})</small></td>
+                        <td>{{ item.quantidade || item.quantity }}</td>
+                        <td>{{ (item.price || item.preco) | currency:'BRL' }}</td>
+                        <td>{{ ((item.price || item.preco) * (item.quantidade || item.quantity)) | currency:'BRL' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="order.detalhes_pagamento" class="mt-2">
+                   <small><strong>Pagamento:</strong> {{ order.detalhes_pagamento.type | uppercase }}</small>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
         <tr *ngIf="orders().length === 0">
             <td colspan="6" class="text-center">Nenhum pedido encontrado.</td>
         </tr>

@@ -13,7 +13,7 @@
   @if (showForm()) {
     <div class="card mb-4 shadow-sm">
       <div class="card-header bg-light">
-        <h5 class="mb-0">Cadastrar Produto</h5>
+        <h5 class="mb-0">{{ editingId ? 'Editar Produto' : 'Cadastrar Produto' }}</h5>
       </div>
       <div class="card-body">
         <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
@@ -140,6 +140,9 @@
                   </span>
                 </td>
                 <td class="text-end">
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="editProduct(product)" title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </button>
                   <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product.id)" title="Excluir">
                     <i class="fas fa-trash"></i>
                   </button>

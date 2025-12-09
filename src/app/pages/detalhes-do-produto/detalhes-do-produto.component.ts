@@ -153,8 +153,12 @@ throw new Error('Method not implemented.');
 
     let extraMedia: string[] | undefined;
     
-    // Só busca mídia extra se for ID numérico (produtos hardcoded)
-    if (typeof id === 'number') {
+    // Verifica se o produto tem sua própria galeria (ex: produtos locais)
+    if ((this.product as any).images && Array.isArray((this.product as any).images) && (this.product as any).images.length > 0) {
+      extraMedia = (this.product as any).images;
+    }
+    // Só busca mídia extra do mapa estático se for ID numérico
+    else if (typeof id === 'number') {
       extraMedia = this.productExtraImages[id];
     }
 

@@ -50,6 +50,22 @@ tbody tr:hover {
     background-color: #f9f9f9;
 }
 
+.btn-admin {
+    background-color: #6f42c1; /* Purple to stand out */
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-admin:hover {
+    background-color: #5a32a3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    color: white;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 1rem;

@@ -58,7 +58,17 @@ export class ProductService {
         estoque: p.stock || 100 // Estoque padrão para itens estáticos
     }));
 
-    this.products.set([...staticWithCompat, ...localProducts]);
+    // Normaliza produtos locais para garantir que tenham a propriedade 'image' usada nos componentes visuais
+    const localNormalized = localProducts.map(p => ({
+        ...p,
+        image: p.imagem_url || p.image, // Garante que 'image' exista para compatibilidade com templates que usam product.image
+        price: p.preco !== undefined ? p.preco : p.price, // Normaliza preco para price
+        name: p.nome || p.name, // Normaliza nome para name
+        description: p.descrição || p.description, // Normaliza descricao para description
+        stock: p.estoque !== undefined ? p.estoque : p.stock // Normaliza estoque para stock
+    }));
+
+    this.products.set([...staticWithCompat, ...localNormalized]);
   }
 
   // Retorna o valor atual do signal
