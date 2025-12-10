@@ -67,6 +67,17 @@ h1 {
     width: 100%;
 }
 
+.row-group {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.row-group .input-group {
+    margin-bottom: 0;
+}
+
 .input-group label {
     display: block;
     font-size: 0.9em;
@@ -202,25 +213,20 @@ h1 {
    ========================================= */
 .cadastro-image-wrapper {
     flex: 1;
-    background-color: var(--primary-color);
-    border-radius: 0 20px 20px 0;
+    background-color: #FDF2F8; /* Fundo rosa bem claro */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end; /* Imagem alinhada na base */
     position: relative;
     overflow: hidden;
 }
 
 .fitness-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-/* Efeito de zoom suave na imagem ao passar o mouse na div (Opcional) */
-.cadastro-image-wrapper:hover .fitness-image {
-    transform: scale(1.05);
+    max-width: 90%;
+    height: auto;
+    object-fit: contain;
+    /* Ajuste fino da imagem se necessário */
+    transform: translateY(20px);
 }
 
 /* =========================================
@@ -228,21 +234,23 @@ h1 {
    ========================================= */
 @media (max-width: 900px) {
     .cadastro-container {
-        flex-direction: column;
-        width: 100%;
-        max-width: 450px;
+        flex-direction: column-reverse; /* Imagem em cima, form embaixo (ou o contrário) */
+        width: 500px;
         min-height: auto;
     }
 
     .cadastro-image-wrapper {
-        display: none;
+        height: 200px;
+    }
+
+    .fitness-image {
+        max-width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: none;
     }
 
     .cadastro-form-wrapper {
-        padding: 40px 25px;
-    }
-
-    .cadastro-form {
-        max-width: 100%;
+        padding: 30px;
     }
 }

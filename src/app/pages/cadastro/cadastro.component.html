@@ -60,6 +60,113 @@
                 </div>
 
                 <div class="input-group">
+                    <label for="cpf">CPF</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="cpf" 
+                            formControlName="cpf" 
+                            placeholder="000.000.000-00"
+                            [class.error-border]="f.cpf.invalid && f.cpf.touched"
+                        >
+                        <i class="fas fa-id-card icon"></i>
+                    </div>
+                    @if (f.cpf.invalid && f.cpf.touched) {
+                        <small class="error-msg">CPF inválido.</small>
+                    }
+                </div>
+
+                <div class="row-group">
+                    <div class="input-group" style="flex: 3;">
+                        <label for="rua">Rua</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="rua" 
+                                formControlName="rua" 
+                                placeholder="Nome da rua"
+                                [class.error-border]="f.rua.invalid && f.rua.touched"
+                            >
+                            <i class="fas fa-map-marker-alt icon"></i>
+                        </div>
+                        @if (f.rua.invalid && f.rua.touched) {
+                            <small class="error-msg">Rua obrigatória.</small>
+                        }
+                    </div>
+
+                    <div class="input-group" style="flex: 1;">
+                        <label for="numero">Número</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="numero" 
+                                formControlName="numero" 
+                                placeholder="Nº"
+                                [class.error-border]="f.numero.invalid && f.numero.touched"
+                            >
+                            <i class="fas fa-home icon"></i>
+                        </div>
+                        @if (f.numero.invalid && f.numero.touched) {
+                            <small class="error-msg">Obrigatório.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="bairro">Bairro</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="bairro" 
+                            formControlName="bairro" 
+                            placeholder="Seu bairro"
+                            [class.error-border]="f.bairro.invalid && f.bairro.touched"
+                        >
+                        <i class="fas fa-map icon"></i>
+                    </div>
+                    @if (f.bairro.invalid && f.bairro.touched) {
+                        <small class="error-msg">Bairro obrigatório.</small>
+                    }
+                </div>
+
+                <div class="row-group">
+                    <div class="input-group" style="flex: 3;">
+                        <label for="cidade">Cidade</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="cidade" 
+                                formControlName="cidade" 
+                                placeholder="Sua cidade"
+                                [class.error-border]="f.cidade.invalid && f.cidade.touched"
+                            >
+                            <i class="fas fa-city icon"></i>
+                        </div>
+                        @if (f.cidade.invalid && f.cidade.touched) {
+                            <small class="error-msg">Cidade obrigatória.</small>
+                        }
+                    </div>
+
+                    <div class="input-group" style="flex: 1;">
+                        <label for="uf">UF</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="uf" 
+                                formControlName="uf" 
+                                placeholder="UF"
+                                maxlength="2"
+                                [class.error-border]="f.uf.invalid && f.uf.touched"
+                            >
+                            <i class="fas fa-map-signs icon"></i>
+                        </div>
+                        @if (f.uf.invalid && f.uf.touched) {
+                            <small class="error-msg">Inválido.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="input-group">
                     <label for="senha">Senha</label>
                     <div class="input-wrapper">
                         <input 
@@ -95,8 +202,7 @@
                 <div class="input-group checkbox-group">
                     <input type="checkbox" id="lgpd" formControlName="lgpd">
                     <label for="lgpd">
-                        Li e concordo com a 
-                        <a href="/https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank">Política de Privacidade</a>, LGPD e 
+                        Li e concordo com a <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank">Política de Privacidade</a>, LGPD e 
                         <a href="https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/lgpd/termo-de-uso" target="_blank">Termos de Uso</a>.
                     </label>
                 </div>
